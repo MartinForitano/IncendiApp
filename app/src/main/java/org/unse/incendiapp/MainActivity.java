@@ -1414,6 +1414,8 @@ public class MainActivity extends AppCompatActivity {
         etCantVictimas.setText("");
         fechaInicioIngreso = null;
         fechaFinIngreso = null;
+        longitudIngresoModifica = 0.0;
+        longitudIngresoModifica = 0.0;
     }
 
     private void volveraAdministracionDesdeModificar() {
