@@ -15,4 +15,5 @@ Version 0.0.22 - Corregido error en modificar evento. Agregado listado de evento
 Version 0.0.23 - Eliminado el uso de base de datos para almacenar eventos, los listados de administracion y eventos en curso se obtendran por medio de la API
 Version 0.0.24 - Agregada la capacidad de verificar eventos (Solo para los que poseen cuenta) y ver eventos en informacion de evento, en el listado se mostrara un icono de verificacion.
 Version 0.0.25 - Chequeo de login para hacer uso del apartado "Administracion" . Agregado metodo para renovar token al iniciar la App.
-Version 0.0.26 - Cambiado el listado de eventos en curso, ahora muestra eventos verificados y en curso. Agregados controles para realizar filtros en el listado de administracion (aun no funciona)
+Version 0.0.26 - Cambiado el listado de eventos en curso, ahora muestra eventos verificados y en curso. Agregados controles para realizar filtros en el listado de administracion (aun no funciona).
+Version 0.0.27 - Ahora se puede elegir la ubicacion del evento pulsando en el mapa, al modificar tambien se puede seleccionar el mapa. Agregado tambien filtros en listado de administracion.
