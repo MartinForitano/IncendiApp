@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/listado_eventos">
+    <fragment
+        android:id="@+id/listado_eventos"
+        android:name="org.unse.incendiapp.UI.listado_eventos"
+        android:label="Eventos en curso"
+        tools:layout="@layout/fragment_listado_eventos" >
+        <action
+            android:id="@+id/action_listado_eventos_to_evento_info"
+            app:destination="@id/evento_info"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/administracion"
+        android:name="org.unse.incendiapp.UI.administracion"
+        android:label="Administracion"
+        tools:layout="@layout/fragment_administracion" >
+        <action
+            android:id="@+id/action_administracion_to_fragment_cuenta_info"
+            app:destination="@id/fragment_cuenta_info" />
+        <action
+            android:id="@+id/action_administracion_to_agregarEvento"
+            app:destination="@id/agregarEvento"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_administracion_to_modificar_evento"
+            app:destination="@id/modificar_evento"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/cuenta"
+        android:name="org.unse.incendiapp.UI.fragment_cuenta"
+        android:label="Cuenta"
+        tools:layout="@layout/fragment_cuenta" >
+        <action
+            android:id="@+id/action_cuenta_to_fragment_cuenta_info"
+            app:destination="@id/fragment_cuenta_info"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_cuenta_info"
+        android:name="org.unse.incendiapp.UI.fragment_cuenta_info"
+        android:label="Informacion de cuenta"
+        tools:layout="@layout/fragment_cuenta_info" >
+        <action
+            android:id="@+id/action_fragment_cuenta_info_to_cuenta"
+            app:destination="@id/cuenta"
+            app:enterAnim="@android:anim/fade_out"
+            app:exitAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_out"
+            app:popExitAnim="@android:anim/fade_in" />
+        <action
+            android:id="@+id/action_fragment_cuenta_info_to_cambio_contrasenia"
+            app:destination="@id/cambio_contrasenia"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/cambio_contrasenia"
+        android:name="org.unse.incendiapp.UI.cambio_contrasenia"
+        android:label="Cambio de contraseña"
+        tools:layout="@layout/fragment_cambio_contrasenia" >
+        <action
+            android:id="@+id/action_cambio_contrasenia_to_cuenta"
+            app:destination="@id/cuenta"
+            app:enterAnim="@android:anim/fade_out"
+            app:exitAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_out"
+            app:popExitAnim="@android:anim/fade_in" />
+    </fragment>
+    <fragment
+        android:id="@+id/evento_info"
+        android:name="org.unse.incendiapp.UI.evento_info"
+        android:label="Informacion del evento"
+        tools:layout="@layout/fragment_evento_info" >
+        <action
+            android:id="@+id/action_evento_info_to_fragment_ubicacion_evento_mapa"
+            app:destination="@id/fragment_ubicacion_evento_mapa"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_ubicacion_evento_mapa"
+        android:name="org.unse.incendiapp.UI.fragment_ubicacion_evento_mapa"
+        android:label="Informacion del evento"
+        tools:layout="@layout/fragment_ubicacion_evento_mapa" />
+    <fragment
+        android:id="@+id/agregarEvento"
+        android:name="org.unse.incendiapp.UI.agregarEvento"
+        android:label="Nuevo evento"
+        tools:layout="@layout/fragment_agregar_evento" >
+        <action
+            android:id="@+id/action_agregarEvento_to_administracion"
+            app:destination="@id/administracion"
+            app:enterAnim="@android:anim/fade_out"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/fade_out"
+            app:popExitAnim="@android:anim/fade_in" />
+        <action
+            android:id="@+id/action_agregarEvento_to_fragment_ubicacion_evento_entrada_modificacion"
+            app:destination="@id/fragment_ubicacion_evento_entrada_modificacion" />
+    </fragment>
+    <fragment
+        android:id="@+id/modificar_evento"
+        android:name="org.unse.incendiapp.UI.modificar_evento"
+        android:label="Modificar datos del evento"
+        tools:layout="@layout/fragment_modificar_evento" >
+        <action
+            android:id="@+id/action_modificar_evento_to_administracion"
+            app:destination="@id/administracion"
+            app:enterAnim="@android:anim/fade_out"
+            app:exitAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_out"
+            app:popExitAnim="@android:anim/fade_in" />
+        <action
+            android:id="@+id/action_modificar_evento_to_fragment_ubicacion_evento_entrada_modificacion"
+            app:destination="@id/fragment_ubicacion_evento_entrada_modificacion" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_ubicacion_evento_entrada_modificacion"
+        android:name="org.unse.incendiapp.UI.fragment_ubicacion_evento_entrada_modificacion"
+        android:label="fragment_ubicacion_evento_entrada_modificacion"
+        tools:layout="@layout/fragment_ubicacion_evento_entrada_modificacion" >
+        <action
+            android:id="@+id/action_fragment_ubicacion_evento_entrada_modificacion_to_agregarEvento"
+            app:destination="@id/agregarEvento" />
+        <action
+            android:id="@+id/action_fragment_ubicacion_evento_entrada_modificacion_to_modificar_evento"
+            app:destination="@id/modificar_evento" />
+    </fragment>
+</navigation>

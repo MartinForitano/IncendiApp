@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UI.agregarEvento">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="1168dp">
+
+                <TextView
+                    android:id="@+id/tv_tituloModificar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Nuevo evento"
+                    android:textSize="34sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Spinner
+                    android:id="@+id/sp_listaTipo"
+                    android:layout_width="200dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="104dp"
+                    android:layout_marginEnd="20dp"
+                    android:prompt="@string/title_spinner_tipo"
+                    android:spinnerMode="dialog"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_tituloModificar" />
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="72dp"
+                    android:layout_marginTop="108dp"
+                    android:labelFor="@id/sp_listaTipo"
+                    android:text="Tipo"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toStartOf="@+id/sp_listaTipo"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_tituloModificar" />
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="68dp"
+                    android:labelFor="@id/et_cantVictimas"
+                    android:text="N° de victimas"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toStartOf="@+id/et_cantVictimas"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+                <EditText
+                    android:id="@+id/et_cantVictimas"
+                    android:layout_width="200dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="44dp"
+                    android:layout_marginEnd="20dp"
+                    android:ems="10"
+                    android:inputType="numberSigned"
+                    android:text="0"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/sp_listaTipo" />
+
+                <CheckBox
+                    android:id="@+id/cb_gendarmeria"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="44dp"
+                    android:layout_marginEnd="72dp"
+                    android:text="Gendarmeria"
+                    android:textSize="10sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+                <CheckBox
+                    android:id="@+id/cb_policia"
+                    android:layout_width="74dp"
+                    android:layout_height="47dp"
+                    android:layout_marginStart="36dp"
+                    android:layout_marginTop="44dp"
+                    android:text="Policia"
+                    android:textSize="10sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+                <CheckBox
+                    android:id="@+id/cb_paramedicos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="36dp"
+                    android:layout_marginTop="28dp"
+                    android:text="Paramedicos"
+                    android:textSize="10sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cb_policia" />
+
+                <CheckBox
+                    android:id="@+id/cb_bomberos"
+                    android:layout_width="85dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="28dp"
+                    android:layout_marginTop="44dp"
+                    android:text="Bomberos"
+                    android:textSize="10sp"
+                    app:layout_constraintStart_toEndOf="@+id/cb_policia"
+                    app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+                <CheckBox
+                    android:id="@+id/cb_otros"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="28dp"
+                    android:layout_marginEnd="108dp"
+                    android:text="Otro"
+                    android:textSize="10sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cb_gendarmeria" />
+
+                <CheckBox
+                    android:id="@+id/cb_tecnicos"
+                    android:layout_width="84dp"
+                    android:layout_height="47dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="28dp"
+                    android:text="Tecnicos"
+                    android:textSize="10sp"
+                    app:layout_constraintStart_toEndOf="@+id/cb_paramedicos"
+                    app:layout_constraintTop_toBottomOf="@+id/cb_bomberos" />
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="36dp"
+                    android:layout_marginTop="36dp"
+                    android:text="Autoridades "
+                    android:textSize="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="164dp"
+                    android:layout_height="41dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="36dp"
+                    android:text="Area de influencia"
+                    android:textSize="20dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cb_paramedicos" />
+
+                <EditText
+                    android:id="@+id/et_areaInfluencia"
+                    android:layout_width="69dp"
+                    android:layout_height="38dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="36dp"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    app:layout_constraintStart_toEndOf="@+id/textView"
+                    app:layout_constraintTop_toBottomOf="@+id/cb_otros" />
+
+                <Spinner
+                    android:id="@+id/sp_medidaAreaInfluencia"
+                    android:layout_width="76dp"
+                    android:layout_height="41dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="32dp"
+                    android:prompt="@string/title_spinner_areaInfluencia"
+                    android:spinnerMode="dialog"
+                    app:layout_constraintStart_toEndOf="@+id/et_areaInfluencia"
+                    app:layout_constraintTop_toBottomOf="@+id/cb_otros" />
+
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="36dp"
+                    android:layout_marginTop="36dp"
+                    android:text="Ubicacion"
+                    android:textSize="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+                <EditText
+                    android:id="@+id/et_ubicacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="36dp"
+                    android:layout_marginEnd="20dp"
+                    android:ems="10"
+                    android:inputType="text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textView9"
+                    app:layout_constraintTop_toBottomOf="@+id/et_areaInfluencia" />
+
+                <EditText
+                    android:id="@+id/et_fechaInicio"
+                    android:layout_width="120dp"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="4dp"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:inputType="datetime"
+                    android:singleLine="true"
+                    android:textSize="10sp"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_fiDatePicker"
+                    app:layout_constraintHorizontal_bias="0.655"
+                    app:layout_constraintStart_toEndOf="@+id/textView10"
+                    app:layout_constraintTop_toBottomOf="@+id/et_ubicacion" />
+
+                <ImageButton
+                    android:id="@+id/btn_fiDatePicker"
+                    android:layout_width="48dp"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="20dp"
+                    android:onClick="mostrarCalendario"
+                    android:src="@android:drawable/ic_menu_my_calendar"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_fiHourPicker"
+                    app:layout_constraintTop_toBottomOf="@+id/et_ubicacion" />
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="36dp"
+                    android:layout_marginTop="32dp"
+                    android:text="Fecha inicio"
+                    android:textSize="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+                <ImageButton
+                    android:id="@+id/btn_fiHourPicker"
+                    android:layout_width="48dp"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:onClick="mostrarReloj"
+                    android:src="@android:drawable/ic_lock_idle_alarm"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_ubicacion" />
+
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="36dp"
+                    android:layout_marginTop="32dp"
+                    android:text="Fecha fin"
+                    android:textSize="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+                <EditText
+                    android:id="@+id/et_fechaFin"
+                    android:layout_width="120dp"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:inputType="date"
+                    android:textSize="10sp"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_ffDatePicker"
+                    app:layout_constraintHorizontal_bias="0.945"
+                    app:layout_constraintStart_toEndOf="@+id/textView12"
+                    app:layout_constraintTop_toBottomOf="@+id/et_fechaInicio" />
+
+                <ImageButton
+                    android:id="@+id/btn_ffDatePicker"
+                    android:layout_width="48dp"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="16dp"
+                    android:onClick="mostrarCalendario"
+                    android:src="@android:drawable/ic_menu_my_calendar"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_ffHourPicker"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_fiDatePicker" />
+
+                <ImageButton
+                    android:id="@+id/btn_ffHourPicker"
+                    android:layout_width="48dp"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="20dp"
+                    android:onClick="mostrarReloj"
+                    android:src="@android:drawable/ic_lock_idle_alarm"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_fiHourPicker" />
+
+                <Button
+                    android:id="@+id/btn_grabarEventoModifica"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:onClick="nuevoEvento"
+                    android:text="Grabar evento"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_ir_a_ubicar_mapa" />
+
+                <Button
+                    android:id="@+id/btn_ir_a_ubicar_mapa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:onClick="iraUbicarEnMapa"
+                    android:text="Abrir mapa"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.935"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_fechaFin" />
+
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="36dp"
+                    android:layout_marginTop="32dp"
+                    android:text="Ubicacion en el mapa"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

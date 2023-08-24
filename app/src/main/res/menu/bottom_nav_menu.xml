@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/listado_eventos"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Eventos" />
+    <item
+        android:id="@+id/cuenta"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="Cuenta" />
+    <item
+        android:id="@+id/administracion"
+        android:icon="@android:drawable/ic_input_get"
+        android:title="Administracion" />
+</menu>

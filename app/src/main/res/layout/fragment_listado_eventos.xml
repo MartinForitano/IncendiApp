@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/listado_eventos"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:tag="listado_tag"
+    tools:context=".UI.listado_eventos">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_listaEventos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:filterTouchesWhenObscured="false"
+        android:focusable="auto"
+        android:focusableInTouchMode="false"
+        android:touchscreenBlocksFocus="false" />
+
+</FrameLayout>
