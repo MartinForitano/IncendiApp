@@ -57,7 +57,7 @@ public class administracion extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private String ipApi = "192.168.0.13:8080";
+    private String ipApi = "192.168.0.14:8080";
 
     private Long idEventoModifica;
 
@@ -138,7 +138,7 @@ public class administracion extends Fragment {
         Cursor registro = DB.rawQuery("SELECT * FROM usuarios where idUsuario = 1", null);
         Usuario u = null;
         if(registro.moveToFirst()){
-            u = new Usuario(null, registro.getString(0), registro.getString(1), registro.getString(2));
+            u = new Usuario(null, registro.getString(0), registro.getString(1), registro.getString(2), registro.getInt(3));
         }
         return u;
     }

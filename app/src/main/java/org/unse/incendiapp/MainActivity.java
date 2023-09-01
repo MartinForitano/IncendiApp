@@ -25,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     /*
     CAMBIAR IP Y PUERTO DEPENDIENDO LA IP LOCAL DE LA PC, EL PUERTO EN LA API ES EL 8080
      */
-    private final String ipApi = "192.168.0.13:8080";
+    private final String ipApi = "192.168.0.14:8080";
 
     private Long idEventoTemp, idEventoModifica;
 
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Double latitudIngreso, longitudIngreso, latitudIngresoModifica, longitudIngresoModifica;
 
-
+    private Integer tipoUsu = 0;
 
 
     @Override
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         etContrasenia = this.findViewById(R.id.et_contraseniausuario);
         nombre = etUsuario.getText().toString();
         contrasenia = etContrasenia.getText().toString();
-        UsuarioApi usuarioApi = new UsuarioApi(contrasenia, nombre);
+        UsuarioApi usuarioApi = new UsuarioApi( nombre, contrasenia, null);
         if (!(nombre.trim().isEmpty()) && !(contrasenia.trim().isEmpty())) {
 
             //Creamos una instancia de Retrofit
@@ -150,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    //CHEQUEAR ACA, PODRIA SER QUE SE DEVUELVA EN LOGIN DATOS RESPONDE EL TIPO DE USUARIO, EL TEMA ES QUE NO ACTUALIZA EL OBTENER TIPO USUARIO
     public void IniciarSesion(View view) {
         String nombre, contrasenia;
         EditText etUsuario, etContrasenia;
@@ -177,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<loginDatosResponde> call, Response<loginDatosResponde> response) {
                 if (response.isSuccessful()) {
+                    Integer tipoUsuario = obtenerTipoUsuarioApi(encriptarContraseña(nombre), encriptarContraseña(contrasenia), response.body().getToken());
                     Toast.makeText(getApplicationContext(), "Login exitoso", Toast.LENGTH_LONG).show();
                     //Conexion a DB
                     AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(getApplicationContext(), "adminUsuarios", null, 1);
@@ -186,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
                     registro.put("nombre", nombre);
                     registro.put("pass", contrasenia);
                     registro.put("token", response.body().getToken());
+                    registro.put("tipousuario", tipoUsuario);
                     DB.insert("usuarios", null, registro);
                     DB.close();
                     etUsuario.setText("");
@@ -283,47 +288,43 @@ public class MainActivity extends AppCompatActivity {
     private void cambiarContrasenia() {
         EditText etPasswordCambia = this.findViewById(R.id.et_passwordCambia);
         String nombre = "", contrasenia = "";
-        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(getApplicationContext(), "adminUsuarios", null, 1);
-        SQLiteDatabase DB = admin.getWritableDatabase(); //abrir el flujo para escribir en la db
-        Cursor registro = DB.rawQuery("SELECT * FROM usuarios WHERE idUsuario = 1", null);
-        if (registro.moveToFirst()) {
-            while (registro.moveToNext()) {
-                nombre = registro.getString(1);
+        Usuario usu = obtenerUsuario();
+       if (usu != null) {
+                nombre = usu.getNombre();
                 contrasenia = etPasswordCambia.getText().toString();
+                Toast.makeText(getApplicationContext(), "Nombre y contra" + nombre + contrasenia, Toast.LENGTH_LONG).show();
+                obtenerUsuario();
+                loginDatosEnvia datosEnvia = new loginDatosEnvia(nombre, contrasenia);
+                //Aca encriptaremos la contraseña para enviar
+                datosEnvia.setNombre(encriptarContraseña(datosEnvia.getNombre()));
+                datosEnvia.setContrasenia(encriptarContraseña(datosEnvia.getContrasenia()));
 
-            }
-            DB.close();
-            loginDatosEnvia datosEnvia = new loginDatosEnvia(nombre, contrasenia);
-            //Aca encriptaremos la contraseña para enviar
-            datosEnvia.setNombre(encriptarContraseña(datosEnvia.getNombre()));
-            datosEnvia.setContrasenia(encriptarContraseña(datosEnvia.getContrasenia()));
 
+                //Creamos una instancia de Retrofit
+                Retrofit.Builder builder = new Retrofit.Builder()
+                        .baseUrl("http://" + ipApi + "/usuarios/actualizar/contrasenia/")
+                        .addConverterFactory(GsonConverterFactory.create());
+                Retrofit retrofit = builder.build();
 
-            //Creamos una instancia de Retrofit
-            Retrofit.Builder builder = new Retrofit.Builder()
-                    .baseUrl("http://" + ipApi + "/usuarios/actualizar/contrasenia/")
-                    .addConverterFactory(GsonConverterFactory.create());
-            Retrofit retrofit = builder.build();
+                //Obtener cliente y crear la llamada para la peticion
 
-            //Obtener cliente y crear la llamada para la peticion
-
-            ApiMethods apiMethods = retrofit.create(ApiMethods.class);
-            Call<UsuarioApi> llamada = apiMethods.updatePass(datosEnvia);
-            llamada.enqueue(new Callback<UsuarioApi>() {
-                @Override
-                public void onResponse(Call<UsuarioApi> call, Response<UsuarioApi> response) {
-                    if (response.isSuccessful()) {
-                        Toast.makeText(getApplicationContext(), "Contraseña actualizada" + response.message(), Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Paso algo" + response.message(), Toast.LENGTH_LONG).show();
+                ApiMethods apiMethods = retrofit.create(ApiMethods.class);
+                Call<UsuarioApi> llamada = apiMethods.updatePass(datosEnvia);
+                llamada.enqueue(new Callback<UsuarioApi>() {
+                    @Override
+                    public void onResponse(Call<UsuarioApi> call, Response<UsuarioApi> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), "Contraseña actualizada" + response.message(), Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Paso algo" + response.message(), Toast.LENGTH_LONG).show();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<UsuarioApi> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), "Error" + t.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
+                    @Override
+                    public void onFailure(Call<UsuarioApi> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), "Error" + t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
         }
     }
 
@@ -1039,42 +1040,59 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressWarnings("deprecation")
     private void cargarControlesModificarEvento(){
-        try {
-            fechaInicioIngreso = null;
-            fechaFinIngreso = null;
-            Button btnVerificacionEvento = findViewById(R.id.btn_verificacionEvento);
-            LocalDateTime fechaInicioModifica, fechaFinModifica;
-            Date di, df;
-            EditText etFechaInicioModifica = findViewById(R.id.et_fechaInicioModifica);
-            EditText etFechaFinModifica = findViewById(R.id.et_fechaFinModifica);
-            EditText etCantVictimasModifica = findViewById(R.id.et_cantVictimasModifica);
-            EditText etUbicacion = findViewById(R.id.et_ubicacionModifica);
+        ConstraintLayout layAdmin, layValidador;
+        layAdmin = findViewById(R.id.lay_modif_admin);
+        layValidador = findViewById(R.id.lay_modif_validador);
+        if(obtenerUsuario().getTipoUsuario()==0) {
+            // 0 = administrador
+            layAdmin.setVisibility(View.VISIBLE);
+            layValidador.setVisibility(View.INVISIBLE);
+            try {
+                fechaInicioIngreso = null;
+                fechaFinIngreso = null;
+                Button btnVerificacionEvento = findViewById(R.id.btn_verificacionEvento);
+                LocalDateTime fechaInicioModifica, fechaFinModifica;
+                Date di, df;
+                EditText etFechaInicioModifica = findViewById(R.id.et_fechaInicioModifica);
+                EditText etFechaFinModifica = findViewById(R.id.et_fechaFinModifica);
+                EditText etCantVictimasModifica = findViewById(R.id.et_cantVictimasModifica);
+                EditText etUbicacion = findViewById(R.id.et_ubicacionModifica);
                 latitudIngreso = eventoModifica.getUbiLatitud();
                 longitudIngreso = eventoModifica.getUbiLongitud();
-            cargarSpinnerTipoModifica();
-            configurarAreaInfluenciaModifica();
-            configurarCheckBoxModificar();
-            etCantVictimasModifica.setText(String.valueOf(eventoModifica.getCantVictimas()));
-            etUbicacion.setText(eventoModifica.getUbicacionEvento());
-            di = new Date(eventoModifica.getTiempoInicio());
-            if(eventoModifica.getTiempoFin() != null){
-                df = new Date(eventoModifica.getTiempoFin());
-                fechaFinModifica = LocalDateTime.of(df.getYear(), df.getMonth(), df.getDate(), df.getHours(), df.getMinutes());
-                etFechaFinModifica.setText(fechaFinModifica.toString());
-                fechaFinIngreso = fechaFinModifica;
-            }else{
-                etFechaFinModifica.setText("");
+                cargarSpinnerTipoModifica();
+                configurarAreaInfluenciaModifica();
+                configurarCheckBoxModificar();
+                etCantVictimasModifica.setText(String.valueOf(eventoModifica.getCantVictimas()));
+                etUbicacion.setText(eventoModifica.getUbicacionEvento());
+                di = new Date(eventoModifica.getTiempoInicio());
+                if (eventoModifica.getTiempoFin() != null) {
+                    df = new Date(eventoModifica.getTiempoFin());
+                    fechaFinModifica = LocalDateTime.of(df.getYear(), df.getMonth(), df.getDate(), df.getHours(), df.getMinutes());
+                    etFechaFinModifica.setText(fechaFinModifica.toString());
+                    fechaFinIngreso = fechaFinModifica;
+                } else {
+                    etFechaFinModifica.setText("");
+                }
+                fechaInicioModifica = LocalDateTime.of(di.getYear(), di.getMonth(), di.getDate(), di.getHours(), di.getMinutes());
+                etFechaInicioModifica.setText(fechaInicioModifica.toString());
+                fechaInicioIngreso = fechaInicioModifica;
+                if (eventoModifica.getEsVerificado()) {
+                    btnVerificacionEvento.setText("Quitar verificacion");
+                } else {
+                    btnVerificacionEvento.setText("Verificar");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            fechaInicioModifica = LocalDateTime.of(di.getYear(), di.getMonth(), di.getDate(), di.getHours(), di.getMinutes());
-            etFechaInicioModifica.setText(fechaInicioModifica.toString());
-            fechaInicioIngreso = fechaInicioModifica;
-            if(eventoModifica.getEsVerificado()){
+        }else{
+            Button btnVerificacionEvento = findViewById(R.id.btn_verificacionEvento);
+            layAdmin.setVisibility(View.INVISIBLE);
+            layValidador.setVisibility(View.VISIBLE);
+            if (eventoModifica.getEsVerificado()) {
                 btnVerificacionEvento.setText("Quitar verificacion");
-            }else{
+            } else {
                 btnVerificacionEvento.setText("Verificar");
             }
-        }catch(Exception e){
-            e.printStackTrace();
         }
     }
 
@@ -1562,6 +1580,7 @@ public class MainActivity extends AppCompatActivity {
                         registro.put("nombre", nombre);
                         registro.put("pass", contrasenia);
                         registro.put("token", response.body().getToken());
+                        registro.put("tipousuario", obtenerTipoUsuarioApi(encriptarContraseña(nombre), encriptarContraseña(contrasenia), response.body().getToken()));
                         DB.update("Usuarios", registro,null,null);
                         DB.close();
                     } else {
@@ -1577,13 +1596,41 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private Integer obtenerTipoUsuarioApi(String nombre, String contrasenia, String token) {
+        UsuarioApi usuarioApi =  new UsuarioApi(nombre, contrasenia, null);
+        //Creamos una instancia de Retrofit
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl("http://" + ipApi + "/usuarios/tipousuario/")
+                .addConverterFactory(GsonConverterFactory.create());
+        Retrofit retrofit = builder.build();
+
+        //Obtener cliente y crear la llamada para la peticion
+
+        ApiMethods apiMethods = retrofit.create(ApiMethods.class);
+        Call<UsuarioApi> llamada = apiMethods.obtenerTipoUsuario(token, usuarioApi);
+        llamada.enqueue(new Callback<UsuarioApi>() {
+            @Override
+            public void onResponse(Call<UsuarioApi> call, Response<UsuarioApi> response) {
+                tipoUsu = response.body().getTipoUsuario();
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioApi> call, Throwable t) {
+
+            }
+        });
+        return tipoUsu;
+    }
+
+
     private Usuario obtenerUsuario() {
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(getApplicationContext(), "adminUsuarios", null, 1);
         SQLiteDatabase DB = admin.getWritableDatabase(); //abrir el flujo para escribir en la db
         Cursor registro = DB.rawQuery("SELECT * FROM usuarios where idUsuario = 1", null);
         Usuario u = null;
         if(registro.moveToFirst()){
-            u = new Usuario(null, registro.getString(1), registro.getString(2), registro.getString(2));
+            u = new Usuario(null, registro.getString(1), registro.getString(2), registro.getString(3), registro.getInt(4));
+            Toast.makeText(this, "tipousu" + u.getTipoUsuario(), Toast.LENGTH_SHORT).show();
         }
         DB.close();
         return u;

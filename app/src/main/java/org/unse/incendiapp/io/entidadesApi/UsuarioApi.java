@@ -2,13 +2,19 @@ package org.unse.incendiapp.io.entidadesApi;
 
 public class UsuarioApi {
 
-    private String contrasenia;
+
 
     private String nombre;
 
-    public UsuarioApi(String contrasenia, String nombre) {
+    private String contrasenia;
+
+    private Integer tipoUsuario;
+
+
+    public UsuarioApi(String nombre, String contrasenia, Integer tipousuario) {
         this.contrasenia = contrasenia;
         this.nombre = nombre;
+        this.tipoUsuario = tipousuario;
     }
 
     public String getContrasenia() {
@@ -25,5 +31,13 @@ public class UsuarioApi {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public Integer getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario(Integer tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
     }
 }

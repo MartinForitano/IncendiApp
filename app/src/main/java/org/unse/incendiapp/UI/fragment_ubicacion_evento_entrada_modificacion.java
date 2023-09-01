@@ -35,11 +35,12 @@ public class fragment_ubicacion_evento_entrada_modificacion extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
-
-            if(((MainActivity) getActivity()).getLatitudIngreso()!=0 && ((MainActivity) getActivity()).getLongitudIngreso() != 0){
-                LatLng ubicacion = new LatLng(((MainActivity) getActivity()).getLatitudIngreso(), ((MainActivity) getActivity()).getLongitudIngreso());
-                googleMap.addMarker(new MarkerOptions().position(ubicacion).title("Ubicacion del evento"));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(ubicacion));
+            if(((MainActivity) getActivity()).getLatitudIngreso()!=null && ((MainActivity) getActivity()).getLongitudIngreso()!=null) {
+                if (((MainActivity) getActivity()).getLatitudIngreso() != 0 && ((MainActivity) getActivity()).getLongitudIngreso() != 0) {
+                    LatLng ubicacion = new LatLng(((MainActivity) getActivity()).getLatitudIngreso(), ((MainActivity) getActivity()).getLongitudIngreso());
+                    googleMap.addMarker(new MarkerOptions().position(ubicacion).title("Ubicacion del evento"));
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(ubicacion));
+                }
             }else{
                 LatLng sydney = new LatLng(-34, 151);
                 googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));

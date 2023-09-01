@@ -1,5 +1,6 @@
 package org.unse.incendiapp.io;
 
+import org.unse.incendiapp.Entidades.Usuario;
 import org.unse.incendiapp.io.entidadesApi.DTOEventoResponse;
 import org.unse.incendiapp.io.entidadesApi.DTOListadoGeneral;
 import org.unse.incendiapp.Entidades.Evento;
@@ -56,4 +57,7 @@ public interface ApiMethods {
 
     @GET("/eventos/listado/verificados/")
     Call<DTOListadoGeneral> listaEventosVerificados(@Header("Authorization") String token);
+
+    @POST("/usuarios/tipousuario/")
+    Call<UsuarioApi> obtenerTipoUsuario(@Header("Authorization") String token, @Body UsuarioApi user);
 }
