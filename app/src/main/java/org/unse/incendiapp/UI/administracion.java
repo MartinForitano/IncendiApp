@@ -57,7 +57,7 @@ public class administracion extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private String ipApi = "192.168.0.14:8080";
+    private String ipApi = "192.168.0.16:8080";
 
     private Long idEventoModifica;
 

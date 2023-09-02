@@ -47,7 +47,6 @@ import org.unse.incendiapp.reciclerViewAssets.item_evento;
 
 
 import java.security.MessageDigest;
-import java.time.Instant;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     /*
     CAMBIAR IP Y PUERTO DEPENDIENDO LA IP LOCAL DE LA PC, EL PUERTO EN LA API ES EL 8080
      */
-    private final String ipApi = "192.168.0.14:8080";
+    private final String ipApi = "192.168.0.16:8080";
 
     private Long idEventoTemp, idEventoModifica;
 
@@ -85,6 +84,10 @@ public class MainActivity extends AppCompatActivity {
     private Double latitudIngreso, longitudIngreso, latitudIngresoModifica, longitudIngresoModifica;
 
     private Integer tipoUsu = 0;
+
+    private Usuario usuarioIngreso;
+
+    private String nombreIngreso, contraseniaIngreso;
 
 
     @Override
@@ -154,13 +157,12 @@ public class MainActivity extends AppCompatActivity {
 
     //CHEQUEAR ACA, PODRIA SER QUE SE DEVUELVA EN LOGIN DATOS RESPONDE EL TIPO DE USUARIO, EL TEMA ES QUE NO ACTUALIZA EL OBTENER TIPO USUARIO
     public void IniciarSesion(View view) {
-        String nombre, contrasenia;
         EditText etUsuario, etContrasenia;
         etUsuario = this.findViewById(R.id.et_nombreusuario);
         etContrasenia = this.findViewById(R.id.et_contraseniausuario);
-        nombre = etUsuario.getText().toString();
-        contrasenia = etContrasenia.getText().toString();
-        loginDatosEnvia datosEnvia = new loginDatosEnvia(nombre, contrasenia);
+        nombreIngreso = etUsuario.getText().toString();
+        contraseniaIngreso = etContrasenia.getText().toString();
+        loginDatosEnvia datosEnvia = new loginDatosEnvia(nombreIngreso, contraseniaIngreso);
         //Aca encriptaremos la contraseña para enviar
         datosEnvia.setNombre(encriptarContraseña(datosEnvia.getNombre()));
         datosEnvia.setContrasenia(encriptarContraseña(datosEnvia.getContrasenia()));
@@ -180,23 +182,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<loginDatosResponde> call, Response<loginDatosResponde> response) {
                 if (response.isSuccessful()) {
-                    Integer tipoUsuario = obtenerTipoUsuarioApi(encriptarContraseña(nombre), encriptarContraseña(contrasenia), response.body().getToken());
+
                     Toast.makeText(getApplicationContext(), "Login exitoso", Toast.LENGTH_LONG).show();
                     //Conexion a DB
-                    AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(getApplicationContext(), "adminUsuarios", null, 1);
-                    SQLiteDatabase DB = admin.getWritableDatabase(); //abrir el flujo para escribir en la db
-                    ContentValues registro = new ContentValues();
-                    registro.put("idUsuario", 1);
-                    registro.put("nombre", nombre);
-                    registro.put("pass", contrasenia);
-                    registro.put("token", response.body().getToken());
-                    registro.put("tipousuario", tipoUsuario);
-                    DB.insert("usuarios", null, registro);
-                    DB.close();
+                    usuarioIngreso = new Usuario(Long.valueOf("1"), encriptarContraseña(nombreIngreso), encriptarContraseña(contraseniaIngreso), response.body().getToken(), null);
+                    cargarUsuarioDB(usuarioIngreso, 1);
                     etUsuario.setText("");
                     etUsuario.setText("");
-                    NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
-                    navController.navigate(R.id.action_cuenta_to_fragment_cuenta_info);
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Paso algo" + response.message(), Toast.LENGTH_LONG).show();
                 }
@@ -209,6 +202,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    public Usuario getUsuarioIngreso(){
+        return this.usuarioIngreso;
+    }
+
 
     private String encriptarContraseña(String contrasenia) {
         String llave = "ClavePasajeContraseña";
@@ -253,6 +251,7 @@ public class MainActivity extends AppCompatActivity {
         DB.execSQL("DELETE FROM usuarios");
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         navController.navigate(R.id.action_fragment_cuenta_info_to_cuenta);
+        usuarioIngreso = null;
         DB.close();
         Toast.makeText(getApplicationContext(), "LogOut exitoso", Toast.LENGTH_LONG).show();
     }
@@ -1573,16 +1572,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<loginDatosResponde> call, Response<loginDatosResponde> response) {
                     if (response.isSuccessful()) {
                         //Conexion a DB
-                        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(getApplicationContext(), "adminUsuarios", null, 1);
-                        SQLiteDatabase DB = admin.getWritableDatabase(); //abrir el flujo para escribir en la db
-                        ContentValues registro = new ContentValues();
-                        registro.put("idUsuario", 1);
-                        registro.put("nombre", nombre);
-                        registro.put("pass", contrasenia);
-                        registro.put("token", response.body().getToken());
-                        registro.put("tipousuario", obtenerTipoUsuarioApi(encriptarContraseña(nombre), encriptarContraseña(contrasenia), response.body().getToken()));
-                        DB.update("Usuarios", registro,null,null);
-                        DB.close();
+                        usuarioIngreso = obtenerUsuario();
+                        cargarUsuarioDB(usuarioIngreso, 0);
                     } else {
                         Toast.makeText(getApplicationContext(), "Paso algo" + response.message(), Toast.LENGTH_LONG).show();
                     }
@@ -1596,22 +1587,36 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private Integer obtenerTipoUsuarioApi(String nombre, String contrasenia, String token) {
-        UsuarioApi usuarioApi =  new UsuarioApi(nombre, contrasenia, null);
+    private void cargarUsuarioDB(Usuario usuario, int estado) {
+        //ESTADO 1 = LOGIN
+        //ESTADO 0 = RENOVACION TOKEN
+
         //Creamos una instancia de Retrofit
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl("http://" + ipApi + "/usuarios/tipousuario/")
                 .addConverterFactory(GsonConverterFactory.create());
         Retrofit retrofit = builder.build();
-
         //Obtener cliente y crear la llamada para la peticion
 
         ApiMethods apiMethods = retrofit.create(ApiMethods.class);
-        Call<UsuarioApi> llamada = apiMethods.obtenerTipoUsuario(token, usuarioApi);
+        Call<UsuarioApi> llamada = apiMethods.obtenerTipoUsuario(usuario.getToken(), new UsuarioApi(usuario.getNombre(), usuario.getContrasenia(), null));
         llamada.enqueue(new Callback<UsuarioApi>() {
             @Override
             public void onResponse(Call<UsuarioApi> call, Response<UsuarioApi> response) {
-                tipoUsu = response.body().getTipoUsuario();
+                AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(getApplicationContext(), "adminUsuarios", null, 1);
+                SQLiteDatabase DB = admin.getWritableDatabase(); //abrir el flujo para escribir en la db
+                ContentValues registro = new ContentValues();
+                registro.put("idUsuario", 1);
+                registro.put("nombre", desencriptarContrasenia(usuario.getNombre()));
+                registro.put("pass", desencriptarContrasenia(usuario.getContrasenia()));
+                registro.put("token", usuario.getToken());
+                registro.put("tipousuario", response.body().getTipoUsuario());
+                DB.insert("usuarios", null, registro);
+                DB.close();
+                if(estado == 1){
+                    NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
+                    navController.navigate(R.id.action_cuenta_to_fragment_cuenta_info);
+                }
             }
 
             @Override
@@ -1619,18 +1624,35 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        return tipoUsu;
+    }
+
+    private String desencriptarContrasenia(String contrasenia) {
+        String llave = "ClavePasajeContraseña";
+        return desencriptar(llave, contrasenia);
+    }
+
+    private String desencriptar(String llave, String contrasenia) {
+        try {
+            SecretKeySpec keySpec = crearClave(llave);
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.DECRYPT_MODE, keySpec);
+            byte[] cadena = Base64.getDecoder().decode(contrasenia);
+            byte[] desencriptacion = cipher.doFinal(cadena);
+            return new String(desencriptacion, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
-    private Usuario obtenerUsuario() {
+    public Usuario obtenerUsuario() {
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(getApplicationContext(), "adminUsuarios", null, 1);
         SQLiteDatabase DB = admin.getWritableDatabase(); //abrir el flujo para escribir en la db
         Cursor registro = DB.rawQuery("SELECT * FROM usuarios where idUsuario = 1", null);
         Usuario u = null;
         if(registro.moveToFirst()){
             u = new Usuario(null, registro.getString(1), registro.getString(2), registro.getString(3), registro.getInt(4));
-            Toast.makeText(this, "tipousu" + u.getTipoUsuario(), Toast.LENGTH_SHORT).show();
         }
         DB.close();
         return u;

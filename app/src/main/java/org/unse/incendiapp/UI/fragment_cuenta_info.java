@@ -74,10 +74,16 @@ public class fragment_cuenta_info extends Fragment {
         return v;
     }
 
-    private void configurarVistaInformacion(){
+    @Override
+    public void onResume() {
+        configurarVistaInformacion();
+        super.onResume();
+    }
+
+    public void configurarVistaInformacion(){
         TextView tvCuenta = v.findViewById(R.id.tv_nombreCuenta);
         AdminSQLiteOpenHelper admin;
-        admin = new AdminSQLiteOpenHelper(v.getContext(), "adminUsuarios", null, 1);
+        admin = new AdminSQLiteOpenHelper(this.getContext(), "adminUsuarios", null, 1);
         SQLiteDatabase DB = admin.getWritableDatabase();
         Cursor registro = DB.rawQuery("SELECT * FROM usuarios WHERE idUsuario = 1", null);
         if(registro.moveToFirst()){
