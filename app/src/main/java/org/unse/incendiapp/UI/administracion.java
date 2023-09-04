@@ -119,13 +119,22 @@ public class administracion extends Fragment {
         layAdmin = getActivity().findViewById(R.id.lay_administracion);
         layAviso = getActivity().findViewById(R.id.lay_aviso_login);
         favAgregar = getActivity().findViewById(R.id.fav_btn_agregarEvento);
-        if(obtenerUsuario()!=null) {
+        Usuario u = obtenerUsuario();
+        if(u!=null) {
             ((MainActivity) getActivity()).cargarListaAdministracion();
             layAdmin.setVisibility(View.VISIBLE);
             layAviso.setVisibility(View.INVISIBLE);
-            favAgregar.setClickable(true);
             configurarControlesFiltro();
-        }else{
+            if(u.getTipoUsuario() == 0) {
+                favAgregar.setVisibility(View.VISIBLE);
+                favAgregar.setClickable(true);
+                favAgregar.setSystemUiVisibility(View.VISIBLE);
+            }else{
+                favAgregar.setVisibility(View.INVISIBLE);
+                favAgregar.setClickable(false);
+                favAgregar.setSystemUiVisibility(View.INVISIBLE);
+            }
+        }else {
             layAdmin.setVisibility(View.INVISIBLE);
             layAviso.setVisibility(View.VISIBLE);
             favAgregar.setClickable(false);

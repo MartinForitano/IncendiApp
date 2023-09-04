@@ -1050,6 +1050,7 @@ public class MainActivity extends AppCompatActivity {
                 fechaInicioIngreso = null;
                 fechaFinIngreso = null;
                 Button btnVerificacionEvento = findViewById(R.id.btn_verificacionEvento);
+                Button btnVerificacionEventoValidador = findViewById(R.id.btn_verificacionEventoValidador);
                 LocalDateTime fechaInicioModifica, fechaFinModifica;
                 Date di, df;
                 EditText etFechaInicioModifica = findViewById(R.id.et_fechaInicioModifica);
@@ -1058,6 +1059,7 @@ public class MainActivity extends AppCompatActivity {
                 EditText etUbicacion = findViewById(R.id.et_ubicacionModifica);
                 latitudIngreso = eventoModifica.getUbiLatitud();
                 longitudIngreso = eventoModifica.getUbiLongitud();
+                btnVerificacionEvento.setVisibility(View.INVISIBLE);
                 cargarSpinnerTipoModifica();
                 configurarAreaInfluenciaModifica();
                 configurarCheckBoxModificar();
@@ -1077,20 +1079,25 @@ public class MainActivity extends AppCompatActivity {
                 fechaInicioIngreso = fechaInicioModifica;
                 if (eventoModifica.getEsVerificado()) {
                     btnVerificacionEvento.setText("Quitar verificacion");
+                    btnVerificacionEventoValidador.setText("Quitar verificacion");
                 } else {
                     btnVerificacionEvento.setText("Verificar");
+                    btnVerificacionEventoValidador.setText("Verificar");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }else{
             Button btnVerificacionEvento = findViewById(R.id.btn_verificacionEvento);
+            Button btnVerificacionEventoValidador = findViewById(R.id.btn_verificacionEventoValidador);
             layAdmin.setVisibility(View.INVISIBLE);
             layValidador.setVisibility(View.VISIBLE);
             if (eventoModifica.getEsVerificado()) {
                 btnVerificacionEvento.setText("Quitar verificacion");
+                btnVerificacionEventoValidador.setText("Quitar verificacion");
             } else {
                 btnVerificacionEvento.setText("Verificar");
+                btnVerificacionEventoValidador.setText("Verificar");
             }
         }
     }
@@ -1240,77 +1247,91 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void editarEvento(View view){
-        String tipo, areaInfluencia, ubicacion;
-        Double latitud, longitud;
-        String[] autoridades;
-        Integer cantVictimas;
-        Long fechaInicio = null, fechafin = null;
-        Date fi, ff;
-        Spinner spListaTipo = findViewById(R.id.sp_listaTipoModifica);
-        Spinner splistaMedida = findViewById(R.id.sp_medidaAreaInfluenciaModifica);
-        EditText etAreaInfluencia = findViewById(R.id.et_areaInfluenciaModifica);
-        EditText etUbicacion = findViewById(R.id.et_ubicacionModifica);
-        EditText etCantVictimas = findViewById(R.id.et_cantVictimasModifica);
-        tipo = spListaTipo.getSelectedItem().toString();
-        areaInfluencia = etAreaInfluencia.getText()+ " " + splistaMedida.getSelectedItem().toString();
-        ubicacion  = etUbicacion.getText().toString();
-        latitud = latitudIngreso;
-        longitud = longitudIngreso;
-        autoridades = cargarAutoridadesModifica();
-        cantVictimas = Integer.valueOf(etCantVictimas.getText().toString());
-        if(fechaInicioIngreso != null) {
-            fi = new Date(fechaInicioIngreso.getYear(), fechaInicioIngreso.getMonth().getValue(), fechaInicioIngreso.getDayOfMonth(), fechaInicioIngreso.getHour(), fechaInicioIngreso.getMinute());
-            fechaInicio = fi.getTime();
-            if(fechaFinIngreso != null) {
-                ff = new Date(fechaFinIngreso.getYear(), fechaFinIngreso.getMonth().getValue(), fechaFinIngreso.getDayOfMonth(), fechaFinIngreso.getHour(), fechaFinIngreso.getMinute());
-                fechafin = ff.getTime();
-            }else{
-                fechafin = null;
+        if(obtenerUsuario().getTipoUsuario() == 0) {
+            String tipo, areaInfluencia, ubicacion;
+            Double latitud = 0.0, longitud = 0.0;
+            String[] autoridades;
+            Integer cantVictimas;
+            Long fechaInicio = null, fechafin = null;
+            Date fi, ff;
+            Spinner spListaTipo = findViewById(R.id.sp_listaTipoModifica);
+            Spinner splistaMedida = findViewById(R.id.sp_medidaAreaInfluenciaModifica);
+            EditText etAreaInfluencia = findViewById(R.id.et_areaInfluenciaModifica);
+            EditText etUbicacion = findViewById(R.id.et_ubicacionModifica);
+            EditText etCantVictimas = findViewById(R.id.et_cantVictimasModifica);
+            tipo = spListaTipo.getSelectedItem().toString();
+            areaInfluencia = etAreaInfluencia.getText() + " " + splistaMedida.getSelectedItem().toString();
+            ubicacion = etUbicacion.getText().toString();
+            latitud = latitudIngreso;
+            longitud = longitudIngreso;
+            autoridades = cargarAutoridadesModifica();
+            cantVictimas = Integer.valueOf(etCantVictimas.getText().toString());
+            if (fechaInicioIngreso != null) {
+                fi = new Date(fechaInicioIngreso.getYear(), fechaInicioIngreso.getMonth().getValue(), fechaInicioIngreso.getDayOfMonth(), fechaInicioIngreso.getHour(), fechaInicioIngreso.getMinute());
+                fechaInicio = fi.getTime();
+                if (fechaFinIngreso != null) {
+                    ff = new Date(fechaFinIngreso.getYear(), fechaFinIngreso.getMonth().getValue(), fechaFinIngreso.getDayOfMonth(), fechaFinIngreso.getHour(), fechaFinIngreso.getMinute());
+                    fechafin = ff.getTime();
+                } else {
+                    fechafin = null;
+                }
             }
-        }
-        if(latitudIngresoModifica != 0.0 && longitudIngresoModifica != 0.0){
-            latitud = latitudIngresoModifica;
-            longitud = longitudIngresoModifica;
-        }
-        if(!areaInfluencia.trim().isEmpty()){
-            if(!ubicacion.trim().isEmpty()){
-                if(latitud != 0){
-                    if(longitud != 0){
-                        if(cantVictimas>=0){
-                            if(fechaInicioIngreso!=null){
-                                    DTOEventoResponse evento = new DTOEventoResponse(eventoModifica.getId(), tipo,cantVictimas,autoridades,areaInfluencia,ubicacion,fechaInicio,fechafin,latitud,longitud, eventoModifica.getEsVerificado());
+            if(latitudIngresoModifica != null && longitudIngresoModifica != null) {
+                if (latitudIngresoModifica != 0.0 && longitudIngresoModifica != 0.0) {
+                    latitud = latitudIngresoModifica;
+                    longitud = longitudIngresoModifica;
+                }
+            }else{
+                latitudIngresoModifica = eventoModifica.getUbiLatitud();
+                longitudIngresoModifica = eventoModifica.getUbiLongitud();
+            }
+            if (!areaInfluencia.trim().isEmpty()) {
+                if (!ubicacion.trim().isEmpty()) {
+                    if (latitud != 0) {
+                        if (longitud != 0) {
+                            if (cantVictimas >= 0) {
+                                if (fechaInicioIngreso != null) {
+                                    DTOEventoResponse evento = new DTOEventoResponse(eventoModifica.getId(), tipo, cantVictimas, autoridades, areaInfluencia, ubicacion, fechaInicio, fechafin, latitud, longitud, eventoModifica.getEsVerificado());
                                     grabarEventoApiModifica(evento);
                                     Toast.makeText(this, "Evento editado con exito", Toast.LENGTH_SHORT).show();
                                     limpiarCamposModifica();
                                     volveraAdministracionDesdeModificar();
-                            }else{
-                                //fechainiciovacia
-                                Toast.makeText(getApplicationContext(), "Ingrese fecha de inicio", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    //fechainiciovacia
+                                    Toast.makeText(getApplicationContext(), "Ingrese fecha de inicio", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                //cantVictimasvacia
+                                Toast.makeText(getApplicationContext(), "Ingrese cantidad de victimas", Toast.LENGTH_SHORT).show();
                             }
-                        }else {
-                            //cantVictimasvacia
-                            Toast.makeText(getApplicationContext(), "Ingrese cantidad de victimas", Toast.LENGTH_SHORT).show();
+                        } else {
+                            //longitudvacia
+                            Toast.makeText(getApplicationContext(), "Ingrese longitud", Toast.LENGTH_SHORT).show();
                         }
-                    }else{
-                        //longitudvacia
-                        Toast.makeText(getApplicationContext(), "Ingrese longitud", Toast.LENGTH_SHORT).show();
+                    } else {
+                        //latitudvacia
+                        Toast.makeText(getApplicationContext(), "Ingrese latitud", Toast.LENGTH_SHORT).show();
                     }
-                }else{
-                    //latitudvacia
-                    Toast.makeText(getApplicationContext(), "Ingrese latitud", Toast.LENGTH_SHORT).show();
+                } else {
+                    //ubicacionvacia
+                    Toast.makeText(getApplicationContext(), "Ingrese ubicacion", Toast.LENGTH_SHORT).show();
                 }
-            }else{
-                //ubicacionvacia
-                Toast.makeText(getApplicationContext(), "Ingrese ubicacion", Toast.LENGTH_SHORT).show();
+            } else {
+                //areainfluenciavacia
+                Toast.makeText(getApplicationContext(), "Ingrese area de influencia", Toast.LENGTH_SHORT).show();
             }
         }else{
-            //areainfluenciavacia
-            Toast.makeText(getApplicationContext(), "Ingrese area de influencia", Toast.LENGTH_SHORT).show();
+            DTOEventoResponse evento = new DTOEventoResponse(eventoModifica.getId(), eventoModifica.getTipo(), eventoModifica.getCantVictimas(), eventoModifica.getAutoridades(), eventoModifica.getAreaInfluencia(), eventoModifica.getUbicacionEvento(), eventoModifica.getTiempoInicio(), eventoModifica.getTiempoFin(), eventoModifica.getUbiLatitud(), eventoModifica.getUbiLongitud(), eventoModifica.getEsVerificado());
+            grabarEventoApiModifica(evento);
+            Toast.makeText(this, "Evento editado con exito", Toast.LENGTH_SHORT).show();
+            limpiarCamposModifica();
+            volveraAdministracionDesdeModificar();
         }
     }
 
     public void verificacionEvento(View v){
         Button btnVerificacionEvento = findViewById(R.id.btn_verificacionEvento);
+        Button btnVerificacionEventoValidador = findViewById(R.id.btn_verificacionEventoValidador);
         if(eventoModifica.getEsVerificado()){
             eventoModifica.setEsVerificado(false);
         }else{
@@ -1318,8 +1339,10 @@ public class MainActivity extends AppCompatActivity {
         }
         if(eventoModifica.getEsVerificado()){
             btnVerificacionEvento.setText("Quitar verificacion");
+            btnVerificacionEventoValidador.setText("Quitar verificacion");
         }else{
             btnVerificacionEvento.setText("Verificar");
+            btnVerificacionEventoValidador.setText("Verificar");
         }
     }
 
@@ -1603,19 +1626,21 @@ public class MainActivity extends AppCompatActivity {
         llamada.enqueue(new Callback<UsuarioApi>() {
             @Override
             public void onResponse(Call<UsuarioApi> call, Response<UsuarioApi> response) {
-                AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(getApplicationContext(), "adminUsuarios", null, 1);
-                SQLiteDatabase DB = admin.getWritableDatabase(); //abrir el flujo para escribir en la db
-                ContentValues registro = new ContentValues();
-                registro.put("idUsuario", 1);
-                registro.put("nombre", desencriptarContrasenia(usuario.getNombre()));
-                registro.put("pass", desencriptarContrasenia(usuario.getContrasenia()));
-                registro.put("token", usuario.getToken());
-                registro.put("tipousuario", response.body().getTipoUsuario());
-                DB.insert("usuarios", null, registro);
-                DB.close();
-                if(estado == 1){
-                    NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
-                    navController.navigate(R.id.action_cuenta_to_fragment_cuenta_info);
+                if(response.isSuccessful()) {
+                    AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(getApplicationContext(), "adminUsuarios", null, 1);
+                    SQLiteDatabase DB = admin.getWritableDatabase(); //abrir el flujo para escribir en la db
+                    ContentValues registro = new ContentValues();
+                    registro.put("idUsuario", 1);
+                    registro.put("nombre", desencriptarContrasenia(usuario.getNombre()));
+                    registro.put("pass", desencriptarContrasenia(usuario.getContrasenia()));
+                    registro.put("token", usuario.getToken());
+                    registro.put("tipousuario", response.body().getTipoUsuario());
+                    DB.insert("usuarios", null, registro);
+                    DB.close();
+                    if (estado == 1) {
+                        NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
+                        navController.navigate(R.id.action_cuenta_to_fragment_cuenta_info);
+                    }
                 }
             }
 
