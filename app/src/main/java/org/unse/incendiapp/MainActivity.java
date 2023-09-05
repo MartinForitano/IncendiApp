@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         Toast.makeText(getApplicationContext(), "Cuenta cargada", Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(getApplicationContext(), "Algo paso", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Algo paso" , Toast.LENGTH_LONG).show();
                     }
                 }
 
@@ -594,9 +594,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void iraCrearEvento(View view){
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        navController.navigate(R.id.action_administracion_to_agregarEvento);
-        //navegar al fragmento
+        if(obtenerUsuario().getTipoUsuario() == 0) {
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+            navController.navigate(R.id.action_administracion_to_agregarEvento);
+            //navegar al fragmento
+        }else{
+            Toast.makeText(getApplicationContext(), "Validadores no pueden agregar eventos", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void irAModificarEvento(Long idEvento){
@@ -1568,51 +1572,16 @@ public class MainActivity extends AppCompatActivity {
 //**************************************************************************************************
 // RENOVAR TOKEN DE USUARIO CADA VEZ QUE INICIA LA APP
 
-    private void renovarToken() {
-        Usuario u = obtenerUsuario();
-        if(u != null) {
-            String nombre, contrasenia;
-            nombre = u.getNombre();
-            contrasenia = u.getContrasenia();
-            loginDatosEnvia datosEnvia = new loginDatosEnvia(nombre, contrasenia);
-            //Aca encriptaremos la contraseña para enviar
-            datosEnvia.setNombre(encriptarContraseña(datosEnvia.getNombre()));
-            datosEnvia.setContrasenia(encriptarContraseña(datosEnvia.getContrasenia()));
-
-
-            //Creamos una instancia de Retrofit
-            Retrofit.Builder builder = new Retrofit.Builder()
-                    .baseUrl("http://" + ipApi + "/usuarios/login/")
-                    .addConverterFactory(GsonConverterFactory.create());
-            Retrofit retrofit = builder.build();
-
-            //Obtener cliente y crear la llamada para la peticion
-
-            ApiMethods apiMethods = retrofit.create(ApiMethods.class);
-            Call<loginDatosResponde> llamada = apiMethods.logIn(datosEnvia);
-            llamada.enqueue(new Callback<loginDatosResponde>() {
-                @Override
-                public void onResponse(Call<loginDatosResponde> call, Response<loginDatosResponde> response) {
-                    if (response.isSuccessful()) {
-                        //Conexion a DB
-                        usuarioIngreso = obtenerUsuario();
-                        cargarUsuarioDB(usuarioIngreso, 0);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Paso algo" + response.message(), Toast.LENGTH_LONG).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<loginDatosResponde> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), "Error" + t.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
-        }
+    private void renovarToken() throws Exception {
+        Toast.makeText(getApplicationContext(), "Falta desarrrolla bien estoooo", Toast.LENGTH_SHORT).show();
+        throw new Exception("Falta desarrollar aca");
     }
 
     private void cargarUsuarioDB(Usuario usuario, int estado) {
         //ESTADO 1 = LOGIN
         //ESTADO 0 = RENOVACION TOKEN
+
+        int estadoUsuario = estado;
 
         //Creamos una instancia de Retrofit
         Retrofit.Builder builder = new Retrofit.Builder()
@@ -1635,11 +1604,15 @@ public class MainActivity extends AppCompatActivity {
                     registro.put("pass", desencriptarContrasenia(usuario.getContrasenia()));
                     registro.put("token", usuario.getToken());
                     registro.put("tipousuario", response.body().getTipoUsuario());
-                    DB.insert("usuarios", null, registro);
-                    DB.close();
-                    if (estado == 1) {
+                    Toast.makeText(getApplicationContext(), "Estado " + estadoUsuario, Toast.LENGTH_SHORT).show();
+                    if(estadoUsuario == 1) {
+                        DB.insert("usuarios", null, registro);
                         NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
                         navController.navigate(R.id.action_cuenta_to_fragment_cuenta_info);
+                        DB.close();
+                    }else{
+                        DB.update("usuarios",registro, null, null);
+                        DB.close();
                     }
                 }
             }
