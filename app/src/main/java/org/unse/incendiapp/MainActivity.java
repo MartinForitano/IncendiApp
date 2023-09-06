@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     /*
     CAMBIAR IP Y PUERTO DEPENDIENDO LA IP LOCAL DE LA PC, EL PUERTO EN LA API ES EL 8080
      */
-    private final String ipApi = "192.168.0.16:8080";
+    private final String ipApi = "192.168.1.19:8080";
 
     private Long idEventoTemp, idEventoModifica;
 
@@ -1572,9 +1572,46 @@ public class MainActivity extends AppCompatActivity {
 //**************************************************************************************************
 // RENOVAR TOKEN DE USUARIO CADA VEZ QUE INICIA LA APP
 
-    private void renovarToken() throws Exception {
-        Toast.makeText(getApplicationContext(), "Falta desarrrolla bien estoooo", Toast.LENGTH_SHORT).show();
-        throw new Exception("Falta desarrollar aca");
+    private void renovarToken() {
+        Usuario u = obtenerUsuario();
+        if(u != null) {
+            nombreIngreso = u.getNombre();
+            contraseniaIngreso = u.getContrasenia();
+            loginDatosEnvia datosEnvia = new loginDatosEnvia(nombreIngreso, contraseniaIngreso);
+            //Aca encriptaremos la contraseña para enviar
+            datosEnvia.setNombre(encriptarContraseña(datosEnvia.getNombre()));
+            datosEnvia.setContrasenia(encriptarContraseña(datosEnvia.getContrasenia()));
+
+
+            //Creamos una instancia de Retrofit
+            Retrofit.Builder builder = new Retrofit.Builder()
+                    .baseUrl("http://" + ipApi + "/usuarios/login/")
+                    .addConverterFactory(GsonConverterFactory.create());
+            Retrofit retrofit = builder.build();
+
+            //Obtener cliente y crear la llamada para la peticion
+
+            ApiMethods apiMethods = retrofit.create(ApiMethods.class);
+            Call<loginDatosResponde> llamada = apiMethods.logIn(datosEnvia);
+            llamada.enqueue(new Callback<loginDatosResponde>() {
+                @Override
+                public void onResponse(Call<loginDatosResponde> call, Response<loginDatosResponde> response) {
+                    if (response.isSuccessful()) {
+                        //Conexion a DB
+                        usuarioIngreso = new Usuario(Long.valueOf("1"), encriptarContraseña(nombreIngreso), encriptarContraseña(contraseniaIngreso), response.body().getToken(), null);
+                        cargarUsuarioDB(usuarioIngreso, 0);
+                        Toast.makeText(getApplicationContext(), "Token renovado", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Paso algo" + response.message(), Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<loginDatosResponde> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), "Error" + t.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     private void cargarUsuarioDB(Usuario usuario, int estado) {
@@ -1604,7 +1641,6 @@ public class MainActivity extends AppCompatActivity {
                     registro.put("pass", desencriptarContrasenia(usuario.getContrasenia()));
                     registro.put("token", usuario.getToken());
                     registro.put("tipousuario", response.body().getTipoUsuario());
-                    Toast.makeText(getApplicationContext(), "Estado " + estadoUsuario, Toast.LENGTH_SHORT).show();
                     if(estadoUsuario == 1) {
                         DB.insert("usuarios", null, registro);
                         NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
