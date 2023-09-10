@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,7 +59,27 @@ public class fragment_ubicacion_evento_entrada_modificacion extends Fragment {
                     ((MainActivity) getActivity()).setLongitudIngreso(latLng.longitude);
                     ((MainActivity) getActivity()).setLatitudIngresoModifica(latLng.latitude);
                     ((MainActivity) getActivity()).setLongitudIngresoModifica(latLng.longitude);
+                    AlertDialog dialog;
+                    AlertDialog.Builder builder;
+
+                    builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("¿Elegir ubicacion?");
+                    builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            getFragmentManager().popBackStack();
+                        }
+                    });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // no hacer nada
+                        }
+                    });
+                    dialog = builder.create();
+                    dialog.show();
                 }
+
             });
 
 

@@ -19,3 +19,4 @@ Version 0.0.26 - Cambiado el listado de eventos en curso, ahora muestra eventos 
 Version 0.0.27 - Ahora se puede elegir la ubicacion del evento pulsando en el mapa, al modificar tambien se puede seleccionar el mapa. Agregado tambien filtros en listado de administracion.
 Version 0.0.28 - Agregado tipos de usuario 1 = validador, 0 = administrador -> Por defecto administrador. Solo los validadores pueden verificar eventos pero no modificar datos.
 Version 0.0.29 - Agregado listado con filtro para ver eventos si se hizo login con cuenta de verificacion o administracion.
+Version 0.0.30 - Agregada confirmacion para añadir ubicacion al mapa en modificacion/alta de evento, agregado zoom al mostrar la ubicacion del evento en la informacion.

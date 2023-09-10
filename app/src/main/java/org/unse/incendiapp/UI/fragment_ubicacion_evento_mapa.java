@@ -38,9 +38,10 @@ public class fragment_ubicacion_evento_mapa extends Fragment {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             //LatLng sydney = new LatLng(-34, 151);
+            float zoom = 10.0f;
             LatLng latEvento = new LatLng(evento.getUbiLatitud(), evento.getUbiLongitud());
             googleMap.addMarker(new MarkerOptions().position(latEvento).title(evento.getTipo()));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latEvento));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latEvento, zoom));
         }
     };
 

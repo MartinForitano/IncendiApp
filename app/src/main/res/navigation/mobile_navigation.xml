@@ -139,8 +139,8 @@
     <fragment
         android:id="@+id/fragment_ubicacion_evento_entrada_modificacion"
         android:name="org.unse.incendiapp.UI.fragment_ubicacion_evento_entrada_modificacion"
-        android:label="fragment_ubicacion_evento_entrada_modificacion"
-        tools:layout="@layout/fragment_ubicacion_evento_entrada_modificacion" >
+        android:label="Ubicacion del evento"
+        tools:layout="@layout/fragment_ubicacion_evento_entrada_modificacion">
         <action
             android:id="@+id/action_fragment_ubicacion_evento_entrada_modificacion_to_agregarEvento"
             app:destination="@id/agregarEvento" />
