@@ -8,14 +8,129 @@
     android:tag="listado_tag"
     tools:context=".UI.listado_eventos">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_listaEventos"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lay_administracion_listado"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="false"
-        android:filterTouchesWhenObscured="false"
-        android:focusable="auto"
-        android:focusableInTouchMode="false"
-        android:touchscreenBlocksFocus="false" />
+        android:visibility="visible">
+
+        <CheckBox
+            android:id="@+id/cb_solo_verificados_listado"
+            android:layout_width="90dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Verificados"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline4"
+            app:layout_constraintStart_toEndOf="@+id/cb_todos_listado"
+            app:layout_constraintTop_toBottomOf="@+id/tv_msj_filtro"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <CheckBox
+            android:id="@+id/cb_todos_listado"
+            android:layout_width="90dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="20dp"
+            android:text="Todos"
+            app:layout_constraintBottom_toTopOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_msj_filtro"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <CheckBox
+            android:id="@+id/cb_solo_en_curso_listado"
+            android:layout_width="90dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:text="En curso"
+            app:layout_constraintBottom_toTopOf="@+id/guideline4"
+            app:layout_constraintStart_toEndOf="@+id/cb_solo_verificados_listado"
+            app:layout_constraintTop_toBottomOf="@+id/tv_msj_filtro"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="267dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintGuide_begin="155dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_msj_filtro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filtros:"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fav_btn_agregarEvento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="68dp"
+            android:clickable="true"
+            android:contentDescription="Agregar evento"
+            android:onClick="iraCrearEvento"
+            android:src="@android:drawable/ic_input_add"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/btn_aplicar_listado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="50dp"
+            android:onClick="cargarListaAdministracionFiltradaLista"
+            android:text="Aplicar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/cb_solo_en_curso_listado"
+            app:layout_constraintTop_toBottomOf="@+id/tv_msj_filtro" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_listadoAdministracion_listado"
+            android:layout_width="411dp"
+            android:layout_height="306dp"
+            android:onClick="iraCrearEVento"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline4"
+            app:layout_constraintVertical_bias="0.159">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lay_listado_actuales"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_listaEventos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:filterTouchesWhenObscured="false"
+            android:focusable="auto"
+            android:focusableInTouchMode="false"
+            android:touchscreenBlocksFocus="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

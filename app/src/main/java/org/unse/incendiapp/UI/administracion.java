@@ -1,45 +1,21 @@
 package org.unse.incendiapp.UI;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.Toast;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.unse.incendiapp.DB.AdminSQLiteOpenHelper;
 import org.unse.incendiapp.Entidades.Usuario;
 import org.unse.incendiapp.MainActivity;
 import org.unse.incendiapp.R;
-import org.unse.incendiapp.io.ApiMethods;
-import org.unse.incendiapp.io.entidadesApi.DTOEventoResponse;
-import org.unse.incendiapp.io.entidadesApi.DTOListadoGeneral;
-import org.unse.incendiapp.io.entidadesApi.UsuarioApi;
-import org.unse.incendiapp.reciclerViewAssets.AdaptadorDatos;
-import org.unse.incendiapp.reciclerViewAssets.item_evento;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -144,7 +120,7 @@ public class administracion extends Fragment {
         CheckBox cbTodos, cbVerificados, cbEnCurso;
         cbTodos = getActivity().findViewById(R.id.cb_todos);
         cbVerificados = getActivity().findViewById(R.id.cb_solo_verificados);
-        cbEnCurso = getActivity().findViewById(R.id.cb_solo_en_curso);
+        cbEnCurso = getActivity().findViewById(R.id.cb_solo_en_curso_listado);
         cbTodos.setChecked(true);
         cbEnCurso.setChecked(false);
         cbVerificados.setChecked(false);

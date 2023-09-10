@@ -80,8 +80,12 @@ public class listado_eventos extends Fragment {
 
     @Override
     public void onResume(){
-        ((MainActivity) getActivity()).cargarListaEventosEnCurso();
+        ((MainActivity) getActivity()).cargarInterfazListadoEventos();
         super.onResume();
+    }
+
+    public void cargarListaAdministracionFiltradaLista(View view) {
+
     }
 
 

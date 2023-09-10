@@ -18,3 +18,4 @@ Version 0.0.25 - Chequeo de login para hacer uso del apartado "Administracion" .
 Version 0.0.26 - Cambiado el listado de eventos en curso, ahora muestra eventos verificados y en curso. Agregados controles para realizar filtros en el listado de administracion (aun no funciona).
 Version 0.0.27 - Ahora se puede elegir la ubicacion del evento pulsando en el mapa, al modificar tambien se puede seleccionar el mapa. Agregado tambien filtros en listado de administracion.
 Version 0.0.28 - Agregado tipos de usuario 1 = validador, 0 = administrador -> Por defecto administrador. Solo los validadores pueden verificar eventos pero no modificar datos.
+Version 0.0.29 - Agregado listado con filtro para ver eventos si se hizo login con cuenta de verificacion o administracion.

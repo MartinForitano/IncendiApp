@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     /*
     CAMBIAR IP Y PUERTO DEPENDIENDO LA IP LOCAL DE LA PC, EL PUERTO EN LA API ES EL 8080
      */
-    private final String ipApi = "192.168.1.19:8080";
+    private final String ipApi = "192.168.0.17:8080";
 
     private Long idEventoTemp, idEventoModifica;
 
@@ -345,6 +345,200 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adaptadorDatos);
     }
 
+    public void cargarInterfazListadoEventos(){
+        ConstraintLayout layAdmin, layNoUsu;
+        layAdmin = findViewById(R.id.lay_administracion_listado);
+        layNoUsu = findViewById(R.id.lay_listado_actuales);
+        Usuario u = obtenerUsuario();
+        if(u!=null) {
+            cargarListaAdministracionLista();
+            layAdmin.setVisibility(View.VISIBLE);
+            layNoUsu.setVisibility(View.INVISIBLE);
+            configurarControlesFiltro();
+        }else {
+            layAdmin.setVisibility(View.INVISIBLE);
+            layNoUsu.setVisibility(View.VISIBLE);
+            cargarListaEventosEnCurso();
+        }
+    }
+
+    public void cargarListaAdministracionFiltradaLista(View view) {
+        CheckBox cbTodos, cbEnCurso, cbVerificados;
+        cbTodos = findViewById(R.id.cb_todos_listado);
+        cbEnCurso = findViewById(R.id.cb_solo_en_curso_listado);
+        cbVerificados = findViewById(R.id.cb_solo_verificados_listado);
+        Call<DTOListadoGeneral> llamada = null;
+        if(cbTodos.isChecked()){
+            //Creamos una instancia de Retrofit
+            //listado general
+            Retrofit.Builder builder = new Retrofit.Builder()
+                    .baseUrl("http://" + ipApi + "/eventos/listado/general/")
+                    .addConverterFactory(GsonConverterFactory.create());
+            Retrofit retrofit = builder.build();
+            ApiMethods apiMethods = retrofit.create(ApiMethods.class);
+            llamada = apiMethods.listaGeneralEventos();
+            Toast.makeText(this, "Listado general", Toast.LENGTH_SHORT).show();
+        } else if (cbEnCurso.isChecked() && cbVerificados.isChecked()) {
+            //Creamos una instancia de Retrofit
+            //listado verificados y en curso
+            Retrofit.Builder builder = new Retrofit.Builder()
+                    .baseUrl("http://" + ipApi + "/eventos/listado/generalencurso/")
+                    .addConverterFactory(GsonConverterFactory.create());
+            Retrofit retrofit = builder.build();
+            ApiMethods apiMethods = retrofit.create(ApiMethods.class);
+            llamada = apiMethods.listaEventosEnCurso();
+            Toast.makeText(this, "Eventos verificados y en curso", Toast.LENGTH_SHORT).show();
+        } else if (cbEnCurso.isChecked() && !(cbVerificados.isChecked())) {
+            //Creamos una instancia de Retrofit
+            //listado no verificados y en curso
+            Retrofit.Builder builder = new Retrofit.Builder()
+                    .baseUrl("http://" + ipApi + "/eventos/listado/generalencursosinverificar/")
+                    .addConverterFactory(GsonConverterFactory.create());
+            Retrofit retrofit = builder.build();
+            ApiMethods apiMethods = retrofit.create(ApiMethods.class);
+            llamada = apiMethods.listaEventosEnCursoSinVerificar(obtenerTokenUsuario());
+            Toast.makeText(this, "Eventos sin verificar en curso", Toast.LENGTH_SHORT).show();
+        } else if (!cbEnCurso.isChecked() && cbVerificados.isChecked()) {
+            //Creamos una instancia de Retrofit
+            //listado verificados
+            Retrofit.Builder builder = new Retrofit.Builder()
+                    .baseUrl("http://" + ipApi + "/eventos/listado/verificados/")
+                    .addConverterFactory(GsonConverterFactory.create());
+            Retrofit retrofit = builder.build();
+            ApiMethods apiMethods = retrofit.create(ApiMethods.class);
+            llamada = apiMethods.listaEventosVerificados(obtenerTokenUsuario());
+            Toast.makeText(this, "Eventos verificados", Toast.LENGTH_SHORT).show();
+        }else{
+            //Creamos una instancia de Retrofit
+            //listado general
+            Retrofit.Builder builder = new Retrofit.Builder()
+                    .baseUrl("http://" + ipApi + "/eventos/listado/general/")
+                    .addConverterFactory(GsonConverterFactory.create());
+            Retrofit retrofit = builder.build();
+            ApiMethods apiMethods = retrofit.create(ApiMethods.class);
+            llamada = apiMethods.listaGeneralEventos();
+            Toast.makeText(this, "Listado general", Toast.LENGTH_SHORT).show();
+        }
+
+
+        //Obtener cliente y crear la llamada para la peticion
+
+        llamada.enqueue(new Callback<DTOListadoGeneral>() {
+            @Override
+            public void onResponse(Call<DTOListadoGeneral> call, Response<DTOListadoGeneral> response) {
+                ArrayList<item_evento> listaItems = new ArrayList<>();
+                if (response.isSuccessful()) {
+                    List<DTOEventoResponse> listaEventos = response.body().getListaEventos();
+                    for (int i = 0; i < listaEventos.size(); i++) {
+                        item_evento e = null;
+                        e = new item_evento(listaEventos.get(i).getId(), listaEventos.get(i).getTipo(), listaEventos.get(i).getUbicacionEvento(), listaEventos.get(i).getEsVerificado());
+                        listaItems.add(e);
+                    }
+                    configurarRecyclerEventosAdministracionLista(listaItems);
+                } else {
+                    Toast.makeText(getApplicationContext(), "No existen eventos cargados", Toast.LENGTH_LONG).show();
+                    configurarRecyclerEventosAdministracionLista(listaItems);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DTOListadoGeneral> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
+
+    public void cargarListaAdministracionLista() {
+        //Creamos una instancia de Retrofit
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl("http://" + ipApi + "/eventos/listado/general/")
+                .addConverterFactory(GsonConverterFactory.create());
+        Retrofit retrofit = builder.build();
+
+        //Obtener cliente y crear la llamada para la peticion
+
+        ApiMethods apiMethods = retrofit.create(ApiMethods.class);
+        Call<DTOListadoGeneral> llamada = apiMethods.listaGeneralEventos();
+
+        llamada.enqueue(new Callback<DTOListadoGeneral>() {
+            @Override
+            public void onResponse(Call<DTOListadoGeneral> call, Response<DTOListadoGeneral> response) {
+                ArrayList<item_evento> listaItems = new ArrayList<>();
+                if (response.isSuccessful()) {
+                    List<DTOEventoResponse> listaEventos = response.body().getListaEventos();
+                    for (int i = 0; i < listaEventos.size(); i++) {
+                        item_evento e = null;
+                        e = new item_evento(listaEventos.get(i).getId(), listaEventos.get(i).getTipo(), listaEventos.get(i).getUbicacionEvento(), listaEventos.get(i).getEsVerificado());
+                        listaItems.add(e);
+                    }
+                    configurarRecyclerEventosAdministracionLista(listaItems);
+                } else {
+                    Toast.makeText(getApplicationContext(), "No existen eventos cargados", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DTOListadoGeneral> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void configurarRecyclerEventosAdministracionLista(ArrayList<item_evento> listaItems){
+        RecyclerView recyclerView = findViewById(R.id.rv_listadoAdministracion_listado);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        AdaptadorDatos adaptadorDatos = new AdaptadorDatos(this, listaItems);
+        adaptadorDatos.setListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {;
+                iraEventoInfo(listaItems.get(recyclerView.getChildLayoutPosition(view)).getIdEvento());
+            }
+        });
+        recyclerView.setAdapter(adaptadorDatos);
+    }
+
+    private void configurarControlesFiltro() {
+        CheckBox cbTodos, cbVerificados, cbEnCurso;
+        cbTodos = findViewById(R.id.cb_todos_listado);
+        cbVerificados = findViewById(R.id.cb_solo_verificados_listado);
+        cbEnCurso = findViewById(R.id.cb_solo_en_curso_listado);
+        cbTodos.setChecked(true);
+        cbEnCurso.setChecked(false);
+        cbVerificados.setChecked(false);
+        cbTodos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (cbTodos.isChecked()) {
+                    cbVerificados.setChecked(false);
+                    cbEnCurso.setChecked(false);
+                }
+            }
+        });
+
+        cbVerificados.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(cbVerificados.isChecked()){
+                    cbTodos.setChecked(false);
+                }
+            }
+        });
+
+        cbEnCurso.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(cbEnCurso.isChecked()){
+                    cbTodos.setChecked(false);
+                }
+            }
+        });
+    }
+
+
     public void cargarListaEventosEnCurso() {
         //Creamos una instancia de Retrofit
         Retrofit.Builder builder = new Retrofit.Builder()
@@ -612,7 +806,7 @@ public class MainActivity extends AppCompatActivity {
     public void cargarListaAdministracionFiltrada(View view) {
         CheckBox cbTodos, cbEnCurso, cbVerificados;
         cbTodos = findViewById(R.id.cb_todos);
-        cbEnCurso = findViewById(R.id.cb_solo_en_curso);
+        cbEnCurso = findViewById(R.id.cb_solo_en_curso_listado);
         cbVerificados = findViewById(R.id.cb_solo_verificados);
         Call<DTOListadoGeneral> llamada = null;
         if(cbTodos.isChecked()){
@@ -1600,8 +1794,7 @@ public class MainActivity extends AppCompatActivity {
                         //Conexion a DB
                         usuarioIngreso = new Usuario(Long.valueOf("1"), encriptarContraseña(nombreIngreso), encriptarContraseña(contraseniaIngreso), response.body().getToken(), null);
                         cargarUsuarioDB(usuarioIngreso, 0);
-                        Toast.makeText(getApplicationContext(), "Token renovado", Toast.LENGTH_LONG).show();
-                    } else {
+                   } else {
                         Toast.makeText(getApplicationContext(), "Paso algo" + response.message(), Toast.LENGTH_LONG).show();
                     }
                 }
