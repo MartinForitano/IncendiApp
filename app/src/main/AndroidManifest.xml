@@ -42,6 +42,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+|       <!-- https://developer.android.com/training/location?hl=es-419 -->
+        <!-- https://developer.android.com/training/location/permissions?hl=es-419#java -->
+        <service
+            android:name="MainActivity"
+            android:foregroundServiceType="location"
+            />
+
     </application>
 
 </manifest>

@@ -1,13 +1,19 @@
 package org.unse.incendiapp;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,11 +27,12 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -33,7 +40,23 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+
 import org.unse.incendiapp.DB.AdminSQLiteOpenHelper;
+import org.unse.incendiapp.Entidades.Evento;
 import org.unse.incendiapp.Entidades.Usuario;
 import org.unse.incendiapp.io.entidadesApi.DTOEventoResponse;
 import org.unse.incendiapp.io.entidadesApi.DTOListadoGeneral;
@@ -48,6 +71,7 @@ import org.unse.incendiapp.reciclerViewAssets.item_evento;
 
 import java.security.MessageDigest;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -89,7 +113,17 @@ public class MainActivity extends AppCompatActivity {
 
     private String nombreIngreso, contraseniaIngreso;
 
+    /*
+    Variables para manejar la ubicacion
+     */
+    private Location ubicacionGPS;
+    private LocationCallback locationCallback;
+    private LocationRequest locationRequest;
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
+    /*
+    Fin de variables para manejar la ubicacion
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,12 +138,33 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    Toast.makeText(getApplicationContext(), "Latitud = " + location.getLatitude() + " Longitud = " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+                    ubicacionGPS = location;
+                    //DETENEMOS LAS SOLICITUDES DE UBICACION PARA GUARDAR BATERIA
+                    fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+                }
+            }
+        };
         renovarToken();
     }
 
-    public void onResume(){
+    public void onResume() {
         super.onResume();
+
     }
+
+    public void onPause() {
+        super.onPause();
+    }
+
 
     public void RegistrarCuenta(View view) {
         String nombre, contrasenia;
@@ -118,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         etContrasenia = this.findViewById(R.id.et_contraseniausuario);
         nombre = etUsuario.getText().toString();
         contrasenia = etContrasenia.getText().toString();
-        UsuarioApi usuarioApi = new UsuarioApi( nombre, contrasenia, null);
+        UsuarioApi usuarioApi = new UsuarioApi(nombre, contrasenia, null);
         if (!(nombre.trim().isEmpty()) && !(contrasenia.trim().isEmpty())) {
 
             //Creamos una instancia de Retrofit
@@ -137,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         Toast.makeText(getApplicationContext(), "Cuenta cargada", Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(getApplicationContext(), "Algo paso" , Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Algo paso", Toast.LENGTH_LONG).show();
                     }
                 }
 
@@ -203,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public Usuario getUsuarioIngreso(){
+    public Usuario getUsuarioIngreso() {
         return this.usuarioIngreso;
     }
 
@@ -212,8 +267,6 @@ public class MainActivity extends AppCompatActivity {
         String llave = "ClavePasajeContraseña";
         return encriptar(llave, contrasenia);
     }
-
-
 
 
     private String encriptar(String llave, String contrasenia) {
@@ -288,42 +341,42 @@ public class MainActivity extends AppCompatActivity {
         EditText etPasswordCambia = this.findViewById(R.id.et_passwordCambia);
         String nombre = "", contrasenia = "";
         Usuario usu = obtenerUsuario();
-       if (usu != null) {
-                nombre = usu.getNombre();
-                contrasenia = etPasswordCambia.getText().toString();
-                Toast.makeText(getApplicationContext(), "Nombre y contra" + nombre + contrasenia, Toast.LENGTH_LONG).show();
-                obtenerUsuario();
-                loginDatosEnvia datosEnvia = new loginDatosEnvia(nombre, contrasenia);
-                //Aca encriptaremos la contraseña para enviar
-                datosEnvia.setNombre(encriptarContraseña(datosEnvia.getNombre()));
-                datosEnvia.setContrasenia(encriptarContraseña(datosEnvia.getContrasenia()));
+        if (usu != null) {
+            nombre = usu.getNombre();
+            contrasenia = etPasswordCambia.getText().toString();
+            Toast.makeText(getApplicationContext(), "Nombre y contra" + nombre + contrasenia, Toast.LENGTH_LONG).show();
+            obtenerUsuario();
+            loginDatosEnvia datosEnvia = new loginDatosEnvia(nombre, contrasenia);
+            //Aca encriptaremos la contraseña para enviar
+            datosEnvia.setNombre(encriptarContraseña(datosEnvia.getNombre()));
+            datosEnvia.setContrasenia(encriptarContraseña(datosEnvia.getContrasenia()));
 
 
-                //Creamos una instancia de Retrofit
-                Retrofit.Builder builder = new Retrofit.Builder()
-                        .baseUrl("http://" + ipApi + "/usuarios/actualizar/contrasenia/")
-                        .addConverterFactory(GsonConverterFactory.create());
-                Retrofit retrofit = builder.build();
+            //Creamos una instancia de Retrofit
+            Retrofit.Builder builder = new Retrofit.Builder()
+                    .baseUrl("http://" + ipApi + "/usuarios/actualizar/contrasenia/")
+                    .addConverterFactory(GsonConverterFactory.create());
+            Retrofit retrofit = builder.build();
 
-                //Obtener cliente y crear la llamada para la peticion
+            //Obtener cliente y crear la llamada para la peticion
 
-                ApiMethods apiMethods = retrofit.create(ApiMethods.class);
-                Call<UsuarioApi> llamada = apiMethods.updatePass(datosEnvia);
-                llamada.enqueue(new Callback<UsuarioApi>() {
-                    @Override
-                    public void onResponse(Call<UsuarioApi> call, Response<UsuarioApi> response) {
-                        if (response.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), "Contraseña actualizada" + response.message(), Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Paso algo" + response.message(), Toast.LENGTH_LONG).show();
-                        }
+            ApiMethods apiMethods = retrofit.create(ApiMethods.class);
+            Call<UsuarioApi> llamada = apiMethods.updatePass(datosEnvia);
+            llamada.enqueue(new Callback<UsuarioApi>() {
+                @Override
+                public void onResponse(Call<UsuarioApi> call, Response<UsuarioApi> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(getApplicationContext(), "Contraseña actualizada" + response.message(), Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Paso algo" + response.message(), Toast.LENGTH_LONG).show();
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<UsuarioApi> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), "Error" + t.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                @Override
+                public void onFailure(Call<UsuarioApi> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), "Error" + t.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 
@@ -332,7 +385,7 @@ public class MainActivity extends AppCompatActivity {
      */
 
 
-    private void configurarRecyclerEventos(ArrayList<item_evento> listaItems){
+    private void configurarRecyclerEventos(ArrayList<item_evento> listaItems) {
         RecyclerView recyclerView = findViewById(R.id.rv_listaEventos);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         AdaptadorDatos adaptadorDatos = new AdaptadorDatos(this, listaItems);
@@ -345,17 +398,17 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adaptadorDatos);
     }
 
-    public void cargarInterfazListadoEventos(){
+    public void cargarInterfazListadoEventos() {
         ConstraintLayout layAdmin, layNoUsu;
         layAdmin = findViewById(R.id.lay_administracion_listado);
         layNoUsu = findViewById(R.id.lay_listado_actuales);
         Usuario u = obtenerUsuario();
-        if(u!=null) {
+        if (u != null) {
             cargarListaAdministracionLista();
             layAdmin.setVisibility(View.VISIBLE);
             layNoUsu.setVisibility(View.INVISIBLE);
             configurarControlesFiltro();
-        }else {
+        } else {
             layAdmin.setVisibility(View.INVISIBLE);
             layNoUsu.setVisibility(View.VISIBLE);
             cargarListaEventosEnCurso();
@@ -368,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
         cbEnCurso = findViewById(R.id.cb_solo_en_curso_listado);
         cbVerificados = findViewById(R.id.cb_solo_verificados_listado);
         Call<DTOListadoGeneral> llamada = null;
-        if(cbTodos.isChecked()){
+        if (cbTodos.isChecked()) {
             //Creamos una instancia de Retrofit
             //listado general
             Retrofit.Builder builder = new Retrofit.Builder()
@@ -408,7 +461,7 @@ public class MainActivity extends AppCompatActivity {
             ApiMethods apiMethods = retrofit.create(ApiMethods.class);
             llamada = apiMethods.listaEventosVerificados(obtenerTokenUsuario());
             Toast.makeText(this, "Eventos verificados", Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             //Creamos una instancia de Retrofit
             //listado general
             Retrofit.Builder builder = new Retrofit.Builder()
@@ -450,7 +503,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     public void cargarListaAdministracionLista() {
         //Creamos una instancia de Retrofit
         Retrofit.Builder builder = new Retrofit.Builder()
@@ -488,13 +540,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void configurarRecyclerEventosAdministracionLista(ArrayList<item_evento> listaItems){
+    public void configurarRecyclerEventosAdministracionLista(ArrayList<item_evento> listaItems) {
         RecyclerView recyclerView = findViewById(R.id.rv_listadoAdministracion_listado);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         AdaptadorDatos adaptadorDatos = new AdaptadorDatos(this, listaItems);
         adaptadorDatos.setListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {;
+            public void onClick(View view) {
+                ;
                 iraEventoInfo(listaItems.get(recyclerView.getChildLayoutPosition(view)).getIdEvento());
             }
         });
@@ -522,7 +575,7 @@ public class MainActivity extends AppCompatActivity {
         cbVerificados.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(cbVerificados.isChecked()){
+                if (cbVerificados.isChecked()) {
                     cbTodos.setChecked(false);
                 }
             }
@@ -531,7 +584,7 @@ public class MainActivity extends AppCompatActivity {
         cbEnCurso.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(cbEnCurso.isChecked()){
+                if (cbEnCurso.isChecked()) {
                     cbTodos.setChecked(false);
                 }
             }
@@ -624,15 +677,92 @@ public class MainActivity extends AppCompatActivity {
         //https://stackoverflow.com/questions/9053685/android-sqlite-saving-string-array
         //serializar
         String retorno = "";
-        if(autoridades == null || autoridades.length==0){
+        if (autoridades == null || autoridades.length == 0) {
             return retorno;
         }
         retorno = autoridades[0];
         for (int i = 1; i < autoridades.length; i++) {
-            retorno = retorno +" - " +autoridades[i];
+            retorno = retorno + " - " + autoridades[i];
         }
         return retorno;
     }
+
+    public void botonAntipanico(View view) {
+        //Falta obtener la ubicacion, toma el tiempo del celular
+        chequearPermisosUbicacion();
+        Evento e = new Evento(null, "Boton antipanico", 0, new String[0], "0 metros", "", Date.from(Instant.now()), null, ubicacionGPS.getLatitude(), ubicacionGPS.getLongitude(), false);
+        /*
+        PASO SIGUIENTE, GUARDAR EN LA DB... FIJARSE DE HACER UN ENDPOINT SOLO PARA BOTON ANTIPANICO QUE NO REQUIERA..
+        AUTENTICACION
+        OTRA COSA, AGREGAR EN LOS MENUS DE LOS RECYCLER UN MENU ADICIONAL PARA BOTON ANTIPANICO
+         */
+    }
+
+    private void chequearPermisosUbicacion(){
+        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                // Si todos los permisos estan OK, se procede a crear la peticion de la localizacion
+                createLocationRequestHighAccuracity();
+            }else{
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
+            }
+        }else{
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+        }
+    }
+
+    protected void createLocationRequestHighAccuracity() {
+        // Ubicacion en modo alta presicion
+        final int REQUEST_CHECK_SETTINGS = 0x1;
+        locationRequest = new LocationRequest.Builder(10000)
+                .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+                .build();
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+        SettingsClient client = LocationServices.getSettingsClient(this);
+        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+        task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
+            @Override
+            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                // All location settings are satisfied. The client can initialize
+                // location requests here.
+                // ...
+                if (!(ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+                    fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+                 }
+              }
+        });
+
+
+        task.addOnFailureListener(this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if (e instanceof ResolvableApiException) {
+                    // Location settings are not satisfied, but this can be fixed
+                    // by showing the user a dialog.
+                    try {
+                        // Show the dialog by calling startResolutionForResult(),
+                        // and check the result in onActivityResult().
+                        ResolvableApiException resolvable = (ResolvableApiException) e;
+                        resolvable.startResolutionForResult(MainActivity.this, REQUEST_CHECK_SETTINGS);
+                        // Al precionar el boton para activar el GPS, se activa en alta presicion
+                        shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION);
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
+                    } catch (IntentSender.SendIntentException sendEx) {
+                        // Ignore the error.
+                    }
+                }
+            }
+        });
+    }
+
+
+
+    // https://developer.android.com/training/location/change-location-settings?hl=es-419
+
+
+
+
 
     /* **************************************************************************************** */
 

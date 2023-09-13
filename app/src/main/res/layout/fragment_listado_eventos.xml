@@ -71,15 +71,15 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fav_btn_agregarEvento"
+            android:id="@+id/fav_btn_botonAntipanico"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="68dp"
             android:clickable="true"
-            android:contentDescription="Agregar evento"
-            android:onClick="iraCrearEvento"
-            android:src="@android:drawable/ic_input_add"
+            android:contentDescription="Boton antipanico"
+            android:onClick="botonAntipanico"
+            android:src="@android:drawable/ic_dialog_alert"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
