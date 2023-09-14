@@ -146,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 for (Location location : locationResult.getLocations()) {
-                    Toast.makeText(getApplicationContext(), "Latitud = " + location.getLatitude() + " Longitud = " + location.getLongitude(), Toast.LENGTH_SHORT).show();
                     ubicacionGPS = location;
                     //DETENEMOS LAS SOLICITUDES DE UBICACION PARA GUARDAR BATERIA
                     fusedLocationProviderClient.removeLocationUpdates(locationCallback);
@@ -690,7 +689,51 @@ public class MainActivity extends AppCompatActivity {
     public void botonAntipanico(View view) {
         //Falta obtener la ubicacion, toma el tiempo del celular
         chequearPermisosUbicacion();
-        Evento e = new Evento(null, "Boton antipanico", 0, new String[0], "0 metros", "", Date.from(Instant.now()), null, ubicacionGPS.getLatitude(), ubicacionGPS.getLongitude(), false);
+        AlertDialog dialog;
+        AlertDialog.Builder builderAlert;
+
+        builderAlert = new AlertDialog.Builder(this);
+        builderAlert.setTitle("¿Confirmar accion?");
+        builderAlert.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                DTOEventoResponse e = new DTOEventoResponse(null, "Boton antipanico", 0, new String[0], "0 metros", "", Date.from(Instant.now()).toInstant().toEpochMilli(), null, ubicacionGPS.getLatitude(), ubicacionGPS.getLongitude(), false);
+
+                //Creamos una instancia de Retrofit
+                Retrofit.Builder builder = new Retrofit.Builder()
+                        .baseUrl("http://" + ipApi + "/eventos/alta/botonantipanico/")
+                        .addConverterFactory(GsonConverterFactory.create());
+                Retrofit retrofit = builder.build();
+
+                //Obtener cliente y crear la llamada para la peticion
+
+                ApiMethods apiMethods = retrofit.create(ApiMethods.class);
+                Call<DTOEventoResponse> llamada = apiMethods.altaEventoBotonAntipanico(e);
+                llamada.enqueue(new Callback<DTOEventoResponse>() {
+                    @Override
+                    public void onResponse(Call<DTOEventoResponse> call, Response<DTOEventoResponse> response) {
+                        if(response.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), "Hecho", Toast.LENGTH_LONG).show();
+                        }else{
+                            Toast.makeText(getApplicationContext(), "Algo paso", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<DTOEventoResponse> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
+            }
+        });
+        builderAlert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // no hacer nada
+            }
+        });
+
+        dialog = builderAlert.create();
+        dialog.show();
         /*
         PASO SIGUIENTE, GUARDAR EN LA DB... FIJARSE DE HACER UN ENDPOINT SOLO PARA BOTON ANTIPANICO QUE NO REQUIERA..
         AUTENTICACION

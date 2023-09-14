@@ -60,4 +60,7 @@ public interface ApiMethods {
 
     @POST("/usuarios/tipousuario/")
     Call<UsuarioApi> obtenerTipoUsuario(@Header("Authorization") String token, @Body UsuarioApi user);
+
+    @POST("/eventos/alta/botonantipanico/")
+    Call<DTOEventoResponse> altaEventoBotonAntipanico(@Body DTOEventoResponse evento);
 }
