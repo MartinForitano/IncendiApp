@@ -147,8 +147,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 for (Location location : locationResult.getLocations()) {
                     ubicacionGPS = location;
-                    //DETENEMOS LAS SOLICITUDES DE UBICACION PARA GUARDAR BATERIA
-                    fusedLocationProviderClient.removeLocationUpdates(locationCallback);
                 }
             }
         };
@@ -156,11 +154,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onResume() {
+        chequearPermisosUbicacion();
+        createLocationRequestHighAccuracity();
         super.onResume();
-
     }
 
     public void onPause() {
+        //DETENEMOS LAS SOLICITUDES DE UBICACION PARA GUARDAR BATERIA
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
         super.onPause();
     }
 
@@ -697,7 +698,9 @@ public class MainActivity extends AppCompatActivity {
         builderAlert.setPositiveButton("Si", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                DTOEventoResponse e = new DTOEventoResponse(null, "Boton antipanico", 0, new String[0], "0 metros", "", Date.from(Instant.now()).toInstant().toEpochMilli(), null, ubicacionGPS.getLatitude(), ubicacionGPS.getLongitude(), false);
+                Date date = Date.from(Instant.now());
+                date.setHours(date.getHours()-3);
+                DTOEventoResponse e = new DTOEventoResponse(null, "Boton antipanico", 0, new String[0], "0 metros", "", date.getTime(), null, ubicacionGPS.getLatitude(), ubicacionGPS.getLongitude(), false);
 
                 //Creamos una instancia de Retrofit
                 Retrofit.Builder builder = new Retrofit.Builder()
@@ -757,7 +760,7 @@ public class MainActivity extends AppCompatActivity {
     protected void createLocationRequestHighAccuracity() {
         // Ubicacion en modo alta presicion
         final int REQUEST_CHECK_SETTINGS = 0x1;
-        locationRequest = new LocationRequest.Builder(10000)
+        locationRequest = new LocationRequest.Builder(20000)
                 .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
                 .build();
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
@@ -885,6 +888,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case "Catastrofe":
                 ivEventoInfo.setImageResource(R.drawable.desastre);
+                break;
+            case "Boton antipanico":
+                ivEventoInfo.setImageResource(R.drawable.botonantipanico);
                 break;
             case "Otro":
                 ivEventoInfo.setImageResource(R.drawable.otro);

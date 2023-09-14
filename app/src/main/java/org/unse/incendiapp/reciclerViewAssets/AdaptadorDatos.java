@@ -65,6 +65,9 @@ public class AdaptadorDatos extends RecyclerView.Adapter<EnlaceDatos> implements
             case "Catastrofe":
                 holder.ivTipoEvento.setImageResource(R.drawable.desastre);
                 break;
+            case "Boton antipanico":
+                holder.ivTipoEvento.setImageResource(R.drawable.botonantipanico);
+                break;
             case "Otro":
                 holder.ivTipoEvento.setImageResource(R.drawable.otro);
                 break;
