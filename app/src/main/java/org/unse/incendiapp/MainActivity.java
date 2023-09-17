@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.listado_eventos, R.id.cuenta, R.id.administracion, R.id.fragment_cuenta_info, R.id.cambio_contrasenia, R.id.evento_info, R.id.agregarEvento, R.id.fragment_ubicacion_evento_mapa, R.id.modificar_evento, R.id.fragment_ubicacion_evento_entrada_modificacion)
+                R.id.listado_eventos, R.id.cuenta, R.id.administracion, R.id.fragment_cuenta_info, R.id.cambio_contrasenia, R.id.evento_info, R.id.agregarEvento, R.id.fragment_ubicacion_evento_mapa, R.id.modificar_evento, R.id.fragment_ubicacion_evento_entrada_modificacion, R.id.telefonos_utiles)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -694,7 +694,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builderAlert;
 
         builderAlert = new AlertDialog.Builder(this);
-        builderAlert.setTitle("¿Confirmar accion?");
+        builderAlert.setTitle("¿Confirmar pulsacion al boton antipanico?");
         builderAlert.setPositiveButton("Si", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -737,11 +737,6 @@ public class MainActivity extends AppCompatActivity {
 
         dialog = builderAlert.create();
         dialog.show();
-        /*
-        PASO SIGUIENTE, GUARDAR EN LA DB... FIJARSE DE HACER UN ENDPOINT SOLO PARA BOTON ANTIPANICO QUE NO REQUIERA..
-        AUTENTICACION
-        OTRA COSA, AGREGAR EN LOS MENUS DE LOS RECYCLER UN MENU ADICIONAL PARA BOTON ANTIPANICO
-         */
     }
 
     private void chequearPermisosUbicacion(){
@@ -805,6 +800,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     // https://developer.android.com/training/location/change-location-settings?hl=es-419
+
+
+    public void iraListadoTelefonosUtiles(View view){
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        navController.navigate(R.id.action_listado_eventos_to_telefonos_utiles);
+        //navegar al fragmento
+    }
 
 
 

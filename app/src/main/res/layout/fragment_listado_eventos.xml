@@ -12,7 +12,7 @@
         android:id="@+id/lay_administracion_listado"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="invisible">
 
         <CheckBox
             android:id="@+id/cb_solo_verificados_listado"
@@ -111,6 +111,20 @@
 
         </androidx.recyclerview.widget.RecyclerView>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fav_btn_telefonosUtilies"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="36dp"
+            android:clickable="true"
+            android:contentDescription="Telefonos utiles"
+            android:onClick="iraListadoTelefonosUtiles"
+            android:src="@android:drawable/stat_sys_phone_call"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/fav_btn_botonAntipanico"
+            app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -118,6 +132,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fav_btn_telefonosUtilies2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="36dp"
+            android:clickable="true"
+            android:contentDescription="Telefonos utiles"
+            android:onClick="iraListadoTelefonosUtiles"
+            android:src="@android:drawable/stat_sys_phone_call"
+            android:visibility="visible"
+            app:fabSize="auto"
+            app:layout_constraintBottom_toTopOf="@+id/fav_btn_botonAntipanico2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:useCompatPadding="false" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fav_btn_botonAntipanico2"

@@ -92,5 +92,8 @@ public class listado_eventos extends Fragment {
 
     }
 
+    public void iraListadoTelefonosUtiles(View view){
+
+    }
 
 }

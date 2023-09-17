@@ -5,24 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="20sp"
-    android:background="#F8A29C"
+    android:background="@color/teal_700"
     android:clickable="false"
     android:filterTouchesWhenObscured="false">
-
-    <ImageView
-        android:id="@+id/iv_TipoEvento"
-        android:layout_width="160dp"
-        android:layout_height="80dp"
-        android:layout_weight="1"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <ImageView
-        android:id="@+id/iv_esVerificado"
-        android:layout_width="115dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:contentDescription="Evento verificado"
-        app:srcCompat="@drawable/verificado" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,24 +16,24 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_tipoEvento"
+            android:id="@+id/tv_descripcionTelefono"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="EVENTO TIPO"
+            android:text="TELEFONO NOMBRE"
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/tv_ubicacionEvento"
+            android:id="@+id/tv_numeroTelefono"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="EVENTO UBICACION"
+            android:text="TELEFONO NRO"
             android:textSize="30sp" />
 
         <TextView
-            android:id="@+id/tv_idEvento"
+            android:id="@+id/tv_nroLlamada"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="idevento"
+            android:text="NRO. TELEFONO"
             android:textSize="0.1sp"
             android:visibility="gone" />
     </LinearLayout>

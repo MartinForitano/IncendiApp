@@ -16,6 +16,13 @@
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_listado_eventos_to_telefonos_utiles"
+            app:destination="@id/telefonos_utiles"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/administracion"
@@ -147,5 +154,14 @@
         <action
             android:id="@+id/action_fragment_ubicacion_evento_entrada_modificacion_to_modificar_evento"
             app:destination="@id/modificar_evento" />
+    </fragment>
+    <fragment
+        android:id="@+id/telefonos_utiles"
+        android:name="org.unse.incendiapp.UI.telefonos_utiles"
+        android:label="Telefonos de emergencia"
+        tools:layout="@layout/fragment_telefonos_utiles">
+        <action
+            android:id="@+id/action_telefonos_utiles_to_listado_eventos"
+            app:destination="@id/listado_eventos" />
     </fragment>
 </navigation>
