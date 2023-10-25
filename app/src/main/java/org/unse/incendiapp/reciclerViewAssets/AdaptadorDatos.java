@@ -1,6 +1,7 @@
 package org.unse.incendiapp.reciclerViewAssets;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.unse.incendiapp.R;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class AdaptadorDatos extends RecyclerView.Adapter<EnlaceDatos> implements View.OnClickListener{
 
@@ -77,6 +80,34 @@ public class AdaptadorDatos extends RecyclerView.Adapter<EnlaceDatos> implements
             holder.ivEsVerificado.setVisibility(View.VISIBLE);
         }else{
             holder.ivEsVerificado.setVisibility(View.INVISIBLE);
+        }
+
+
+        //COLOREAR BACKGROUND DEPENDIENDO EL EVENTO
+
+        /*
+        ROJO: EVENTO EN CURSO Y VERIFICADO
+        AMARILLO: EVENTO EN CURSO PERO NO VERIFICADO
+        BLANCO: EVENTO FINALIZADO
+         */
+
+        Date ti, tf = null;
+        ti = Date.from(Instant.ofEpochMilli(items.get(position).getTiempoInicio()));
+        if(items.get(position).getTiempoFin() != null) {
+            tf = Date.from(Instant.ofEpochMilli(items.get(position).getTiempoFin()));
+        }
+        if(items.get(position).getEsVerificado() && tf == null){
+            //evento verificado y en curso
+            holder.itemView.setBackgroundColor(Color.RED);
+        }else{
+            if(tf == null & !items.get(position).getEsVerificado()){
+                // evento no verificado y en curso
+                holder.itemView.setBackgroundColor(Color.YELLOW);
+            }else{
+                if(tf != null){
+                    holder.itemView.setBackgroundColor(Color.GRAY);
+                }
+            }
         }
 
 

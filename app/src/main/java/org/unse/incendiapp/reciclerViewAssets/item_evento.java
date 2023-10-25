@@ -8,11 +8,31 @@ public class item_evento {
 
     private Boolean esVerificado;
 
-    public item_evento(Long idEvento, String tipoEvento, String ubicacionEvento, Boolean esverificado) {
+    private Long tiempoInicio, tiempoFin;
+
+    public item_evento(Long idEvento, String tipoEvento, String ubicacionEvento, Boolean esverificado, Long tiempoInicio, Long tiempofin) {
         this.idEvento = idEvento;
         this.tipoEvento = tipoEvento;
         this.ubicacionEvento = ubicacionEvento;
         this.esVerificado = esverificado;
+        this.tiempoInicio = tiempoInicio;
+        this.tiempoFin = tiempofin;
+    }
+
+    public Long getTiempoFin() {
+        return tiempoFin;
+    }
+
+    public void setTiempoFin(Long tiempoFin) {
+        this.tiempoFin = tiempoFin;
+    }
+
+    public Long getTiempoInicio() {
+        return tiempoInicio;
+    }
+
+    public void setTiempoInicio(Long tiempoInicio) {
+        this.tiempoInicio = tiempoInicio;
     }
 
     public int getIdImagenEvento() {

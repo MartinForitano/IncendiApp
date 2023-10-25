@@ -22,3 +22,5 @@ Version 0.0.29 - Agregado listado con filtro para ver eventos si se hizo login c
 Version 0.0.30 - Agregada confirmacion para añadir ubicacion al mapa en modificacion/alta de evento, agregado zoom al mostrar la ubicacion del evento en la informacion.
 Version 0.0.31 - Agregado boton anti panico para usuarios autenticados como para no autenticados.
 Version 0.0.32 - Agregado boton para consultar telefonos de emergencia, con un listado de numeros y al hacer click sobre un item se realiza la llamada.
+Version 0.0.32-1 - Agregados colores para diferenciar el estado del evento: Rojo (evento en curso y verificado), amarillo(evento en curso y NO verificado) y gris (evento finalizado).
+

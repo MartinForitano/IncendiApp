@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     /*
     CAMBIAR IP Y PUERTO DEPENDIENDO LA IP LOCAL DE LA PC, EL PUERTO EN LA API ES EL 8080
      */
-    private final String ipApi = "192.168.0.17:8080";
+    private final String ipApi = "192.168.0.16:8080";
 
     private Long idEventoTemp, idEventoModifica;
 
@@ -484,7 +484,7 @@ public class MainActivity extends AppCompatActivity {
                     List<DTOEventoResponse> listaEventos = response.body().getListaEventos();
                     for (int i = 0; i < listaEventos.size(); i++) {
                         item_evento e = null;
-                        e = new item_evento(listaEventos.get(i).getId(), listaEventos.get(i).getTipo(), listaEventos.get(i).getUbicacionEvento(), listaEventos.get(i).getEsVerificado());
+                        e = new item_evento(listaEventos.get(i).getId(), listaEventos.get(i).getTipo(), listaEventos.get(i).getUbicacionEvento(), listaEventos.get(i).getEsVerificado(), listaEventos.get(i).getTiempoInicio(), listaEventos.get(i).getTiempoFin());
                         listaItems.add(e);
                     }
                     configurarRecyclerEventosAdministracionLista(listaItems);
@@ -523,7 +523,7 @@ public class MainActivity extends AppCompatActivity {
                     List<DTOEventoResponse> listaEventos = response.body().getListaEventos();
                     for (int i = 0; i < listaEventos.size(); i++) {
                         item_evento e = null;
-                        e = new item_evento(listaEventos.get(i).getId(), listaEventos.get(i).getTipo(), listaEventos.get(i).getUbicacionEvento(), listaEventos.get(i).getEsVerificado());
+                        e = new item_evento(listaEventos.get(i).getId(), listaEventos.get(i).getTipo(), listaEventos.get(i).getUbicacionEvento(), listaEventos.get(i).getEsVerificado(), listaEventos.get(i).getTiempoInicio(), listaEventos.get(i).getTiempoFin());
                         listaItems.add(e);
                     }
                     configurarRecyclerEventosAdministracionLista(listaItems);
@@ -611,7 +611,7 @@ public class MainActivity extends AppCompatActivity {
                     List<DTOEventoResponse> listaEventos = response.body().getListaEventos();
                     for (int i = 0; i < listaEventos.size(); i++) {
                         item_evento e = null;
-                        e = new item_evento(listaEventos.get(i).getId(), listaEventos.get(i).getTipo(), listaEventos.get(i).getUbicacionEvento(), listaEventos.get(i).getEsVerificado());
+                        e = new item_evento(listaEventos.get(i).getId(), listaEventos.get(i).getTipo(), listaEventos.get(i).getUbicacionEvento(), listaEventos.get(i).getEsVerificado(), listaEventos.get(i).getTiempoInicio(), listaEventos.get(i).getTiempoFin());
                         listaItems.add(e);
                     }
                     configurarRecyclerEventos(listaItems);
@@ -648,7 +648,7 @@ public class MainActivity extends AppCompatActivity {
                     List<DTOEventoResponse> listaEventos = response.body().getListaEventos();
                     for (int i = 0; i < listaEventos.size(); i++) {
                         item_evento e = null;
-                        e = new item_evento(listaEventos.get(i).getId(), listaEventos.get(i).getTipo(), listaEventos.get(i).getUbicacionEvento(), listaEventos.get(i).getEsVerificado());
+                        e = new item_evento(listaEventos.get(i).getId(), listaEventos.get(i).getTipo(), listaEventos.get(i).getUbicacionEvento(), listaEventos.get(i).getEsVerificado() , listaEventos.get(i).getTiempoInicio(), listaEventos.get(i).getTiempoFin());
                         listaItems.add(e);
                     }
                     configurarRecyclerEventosAdministracion(listaItems);
@@ -1053,7 +1053,7 @@ public class MainActivity extends AppCompatActivity {
                     List<DTOEventoResponse> listaEventos = response.body().getListaEventos();
                     for (int i = 0; i < listaEventos.size(); i++) {
                         item_evento e = null;
-                        e = new item_evento(listaEventos.get(i).getId(), listaEventos.get(i).getTipo(), listaEventos.get(i).getUbicacionEvento(), listaEventos.get(i).getEsVerificado());
+                        e = new item_evento(listaEventos.get(i).getId(), listaEventos.get(i).getTipo(), listaEventos.get(i).getUbicacionEvento(), listaEventos.get(i).getEsVerificado() , listaEventos.get(i).getTiempoInicio(), listaEventos.get(i).getTiempoFin());
                         listaItems.add(e);
                     }
                     configurarRecyclerEventosAdministracion(listaItems);
