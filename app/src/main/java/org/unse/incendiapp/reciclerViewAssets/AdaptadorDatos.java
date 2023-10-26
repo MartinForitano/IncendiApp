@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.unse.incendiapp.R;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -75,14 +76,6 @@ public class AdaptadorDatos extends RecyclerView.Adapter<EnlaceDatos> implements
                 holder.ivTipoEvento.setImageResource(R.drawable.otro);
                 break;
         }
-
-        if(items.get(position).getEsVerificado()){
-            holder.ivEsVerificado.setVisibility(View.VISIBLE);
-        }else{
-            holder.ivEsVerificado.setVisibility(View.INVISIBLE);
-        }
-
-
         //COLOREAR BACKGROUND DEPENDIENDO EL EVENTO
 
         /*
@@ -93,8 +86,11 @@ public class AdaptadorDatos extends RecyclerView.Adapter<EnlaceDatos> implements
 
         Date ti, tf = null;
         ti = Date.from(Instant.ofEpochMilli(items.get(position).getTiempoInicio()));
+        LocalDateTime ldtTi = LocalDateTime.of(ti.getYear(), ti.getMonth(), ti.getDate(), ti.getHours(), ti.getMinutes());
+        LocalDateTime ldtTf = null;
         if(items.get(position).getTiempoFin() != null) {
             tf = Date.from(Instant.ofEpochMilli(items.get(position).getTiempoFin()));
+            ldtTf = LocalDateTime.of(tf.getYear(), tf.getMonth(), tf.getDate(), tf.getHours(), tf.getMinutes());
         }
         if(items.get(position).getEsVerificado() && tf == null){
             //evento verificado y en curso
@@ -109,6 +105,19 @@ public class AdaptadorDatos extends RecyclerView.Adapter<EnlaceDatos> implements
                 }
             }
         }
+        if(tf == null){
+            holder.tvFechas.setText(ldtTi.getDayOfMonth()+"/"+ldtTi.getMonthValue()+"/"+ldtTi.getYear()+"  -  "+"En curso");
+        }else{
+            holder.tvFechas.setText(ldtTi.getDayOfMonth()+"/"+ldtTi.getMonthValue()+"/"+ldtTi.getYear()+"  -  "+ldtTf.getDayOfMonth()+"/"+ldtTf.getMonthValue()+"/"+ldtTf.getYear());
+        }
+
+
+        /*
+        CONFIGURAR TEXTVIEW FECHAS PARA MOSTRAR EN CADA ITEM
+         */
+
+
+
 
 
     }

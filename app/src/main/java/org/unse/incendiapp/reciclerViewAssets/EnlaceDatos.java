@@ -11,8 +11,8 @@ import org.unse.incendiapp.R;
 
 public class EnlaceDatos extends RecyclerView.ViewHolder {
 
-    TextView tvTipo, tvUbicacion, tvId;
-    ImageView ivTipoEvento, ivEsVerificado;
+    TextView tvTipo, tvUbicacion, tvId, tvFechas;
+    ImageView ivTipoEvento;
 
     public EnlaceDatos(@NonNull View itemView) {
         super(itemView);
@@ -20,6 +20,6 @@ public class EnlaceDatos extends RecyclerView.ViewHolder {
         tvUbicacion = itemView.findViewById(R.id.tv_ubicacionEvento);
         tvId = itemView.findViewById(R.id.tv_idEvento);
         ivTipoEvento = itemView.findViewById(R.id.iv_TipoEvento);
-        ivEsVerificado = itemView.findViewById(R.id.iv_esVerificado);
+        tvFechas = itemView.findViewById(R.id.tv_item_fechas);
     }
 }

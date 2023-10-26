@@ -16,19 +16,19 @@
         android:layout_weight="1"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <ImageView
-        android:id="@+id/iv_esVerificado"
-        android:layout_width="115dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:contentDescription="Evento verificado"
-        app:srcCompat="@drawable/verificado" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_idEvento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="idevento"
+            android:textSize="0.1sp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_tipoEvento"
@@ -40,16 +40,19 @@
         <TextView
             android:id="@+id/tv_ubicacionEvento"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="EVENTO UBICACION"
-            android:textSize="30sp" />
+            android:textSize="26sp" />
 
         <TextView
-            android:id="@+id/tv_idEvento"
+            android:id="@+id/tv_item_fechas"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="idevento"
-            android:textSize="0.1sp"
-            android:visibility="gone" />
+            android:layout_height="match_parent"
+            android:layout_margin="0dp"
+            android:layout_marginHorizontal="0dp"
+            android:layout_marginTop="0dp"
+            android:text="FECHA INICIO Y FIN"
+            android:textSize="10sp" />
+
     </LinearLayout>
 </LinearLayout>
