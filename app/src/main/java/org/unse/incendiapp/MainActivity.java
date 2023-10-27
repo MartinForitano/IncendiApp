@@ -6,12 +6,14 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
@@ -749,13 +751,16 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(Call<DTOEventoResponse> call, Response<DTOEventoResponse> response) {
                         if(response.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "Hecho", Toast.LENGTH_LONG).show();
+                            realizarLlamadaBotonAntipanico();
                         }else{
                             Toast.makeText(getApplicationContext(), "Algo paso", Toast.LENGTH_LONG).show();
                         }
                     }
                     @Override
                     public void onFailure(Call<DTOEventoResponse> call, Throwable t) {
+                        // Entra por aca, no se por que
                         t.printStackTrace();
+                        realizarLlamadaBotonAntipanico();
                     }
                 });
             }
@@ -770,6 +775,18 @@ public class MainActivity extends AppCompatActivity {
         dialog = builderAlert.create();
         dialog.show();
     }
+
+    private void realizarLlamadaBotonAntipanico(){
+        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED){
+            Intent i = new Intent(Intent.ACTION_CALL);
+            i.setData(Uri.parse("tel:" + 101));
+            Toast.makeText(getApplicationContext(), "Llamando a 101 - Comando radioelectrico", Toast.LENGTH_LONG).show();
+            startActivity(i);
+        }else{
+            requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 255);
+        }
+    }
+
 
     private void chequearPermisosUbicacion(){
         if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
