@@ -81,7 +81,7 @@ public class AdaptadorDatos extends RecyclerView.Adapter<EnlaceDatos> implements
         /*
         ROJO: EVENTO EN CURSO Y VERIFICADO
         AMARILLO: EVENTO EN CURSO PERO NO VERIFICADO
-        BLANCO: EVENTO FINALIZADO
+        GRIS: EVENTO FINALIZADO
          */
 
         Date ti, tf = null;

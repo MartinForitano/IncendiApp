@@ -416,10 +416,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void cargarListaAdministracionFiltradaLista(View view) {
-        CheckBox cbTodos, cbEnCurso, cbVerificados;
+        CheckBox cbTodos, cbEnCurso, cbVerificados, cbFinalizados;
         cbTodos = findViewById(R.id.cb_todos_listado);
         cbEnCurso = findViewById(R.id.cb_solo_en_curso_listado);
         cbVerificados = findViewById(R.id.cb_solo_verificados_listado);
+        cbFinalizados = findViewById(R.id.cb_solo_finalizados);
         Call<DTOListadoGeneral> llamada = null;
         if (cbTodos.isChecked()) {
             //Creamos una instancia de Retrofit
@@ -461,7 +462,17 @@ public class MainActivity extends AppCompatActivity {
             ApiMethods apiMethods = retrofit.create(ApiMethods.class);
             llamada = apiMethods.listaEventosVerificados(obtenerTokenUsuario());
             Toast.makeText(this, "Eventos verificados", Toast.LENGTH_SHORT).show();
-        } else {
+        }else if(cbFinalizados.isChecked()){
+            //Creamos una instancia de Retrofit
+            //listado verificados
+            Retrofit.Builder builder = new Retrofit.Builder()
+                    .baseUrl("http://" + ipApi + "/eventos/listado/finalizados/")
+                    .addConverterFactory(GsonConverterFactory.create());
+            Retrofit retrofit = builder.build();
+            ApiMethods apiMethods = retrofit.create(ApiMethods.class);
+            llamada = apiMethods.obtenerListadoFinalizados(obtenerTokenUsuario());
+            Toast.makeText(this, "Eventos finalizados", Toast.LENGTH_SHORT).show();
+        }else {
             //Creamos una instancia de Retrofit
             //listado general
             Retrofit.Builder builder = new Retrofit.Builder()
@@ -555,19 +566,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void configurarControlesFiltro() {
-        CheckBox cbTodos, cbVerificados, cbEnCurso;
+        CheckBox cbTodos, cbVerificados, cbEnCurso, cbFinalizados;
         cbTodos = findViewById(R.id.cb_todos_listado);
         cbVerificados = findViewById(R.id.cb_solo_verificados_listado);
         cbEnCurso = findViewById(R.id.cb_solo_en_curso_listado);
+        cbFinalizados = findViewById(R.id.cb_solo_finalizados);
         cbTodos.setChecked(true);
         cbEnCurso.setChecked(false);
         cbVerificados.setChecked(false);
+        cbFinalizados.setChecked(false);
         cbTodos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (cbTodos.isChecked()) {
                     cbVerificados.setChecked(false);
                     cbEnCurso.setChecked(false);
+                    cbFinalizados.setChecked(false);
                 }
             }
         });
@@ -577,6 +591,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (cbVerificados.isChecked()) {
                     cbTodos.setChecked(false);
+                    cbFinalizados.setChecked(false);
                 }
             }
         });
@@ -585,6 +600,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (cbEnCurso.isChecked()) {
+                    cbTodos.setChecked(false);
+                    cbFinalizados.setChecked(false);
+                }
+            }
+        });
+
+        cbFinalizados.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (cbFinalizados.isChecked()) {
+                    cbVerificados.setChecked(false);
+                    cbEnCurso.setChecked(false);
                     cbTodos.setChecked(false);
                 }
             }
@@ -985,10 +1012,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void cargarListaAdministracionFiltrada(View view) {
-        CheckBox cbTodos, cbEnCurso, cbVerificados;
+        CheckBox cbTodos, cbEnCurso, cbVerificados, cbFinalizados;
         cbTodos = findViewById(R.id.cb_todos);
         cbEnCurso = findViewById(R.id.cb_solo_en_curso_listado);
         cbVerificados = findViewById(R.id.cb_solo_verificados);
+        cbFinalizados = findViewById(R.id.cb_solo_finalizados_admin);
         Call<DTOListadoGeneral> llamada = null;
         if(cbTodos.isChecked()){
             //Creamos una instancia de Retrofit
@@ -1030,6 +1058,16 @@ public class MainActivity extends AppCompatActivity {
             ApiMethods apiMethods = retrofit.create(ApiMethods.class);
             llamada = apiMethods.listaEventosVerificados(obtenerTokenUsuario());
             Toast.makeText(this, "Eventos verificados", Toast.LENGTH_SHORT).show();
+        }else if(cbFinalizados.isChecked()){
+            //Creamos una instancia de Retrofit
+            //listado verificados
+            Retrofit.Builder builder = new Retrofit.Builder()
+                    .baseUrl("http://" + ipApi + "/eventos/listado/finalizados/")
+                    .addConverterFactory(GsonConverterFactory.create());
+            Retrofit retrofit = builder.build();
+            ApiMethods apiMethods = retrofit.create(ApiMethods.class);
+            llamada = apiMethods.obtenerListadoFinalizados(obtenerTokenUsuario());
+            Toast.makeText(this, "Eventos finalizados", Toast.LENGTH_SHORT).show();
         }else{
             //Creamos una instancia de Retrofit
             //listado general

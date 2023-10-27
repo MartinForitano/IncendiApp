@@ -117,19 +117,22 @@ public class administracion extends Fragment {
     }
 
     private void configurarControlesFiltro() {
-        CheckBox cbTodos, cbVerificados, cbEnCurso;
+        CheckBox cbTodos, cbVerificados, cbEnCurso, cbFinalizados;
         cbTodos = getActivity().findViewById(R.id.cb_todos);
         cbVerificados = getActivity().findViewById(R.id.cb_solo_verificados);
         cbEnCurso = getActivity().findViewById(R.id.cb_solo_en_curso_listado);
+        cbFinalizados = getActivity().findViewById(R.id.cb_solo_finalizados_admin);
         cbTodos.setChecked(true);
         cbEnCurso.setChecked(false);
         cbVerificados.setChecked(false);
+        cbFinalizados.setChecked(false);
         cbTodos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (cbTodos.isChecked()) {
                     cbVerificados.setChecked(false);
                     cbEnCurso.setChecked(false);
+                    cbFinalizados.setChecked(false);
                 }
             }
         });
@@ -139,6 +142,7 @@ public class administracion extends Fragment {
             public void onClick(View view) {
                 if(cbVerificados.isChecked()){
                     cbTodos.setChecked(false);
+                    cbFinalizados.setChecked(false);
                 }
             }
         });
@@ -148,9 +152,22 @@ public class administracion extends Fragment {
             public void onClick(View view) {
                 if(cbEnCurso.isChecked()){
                     cbTodos.setChecked(false);
+                    cbFinalizados.setChecked(false);
                 }
             }
         });
+
+        cbFinalizados.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (cbFinalizados.isChecked()) {
+                    cbVerificados.setChecked(false);
+                    cbEnCurso.setChecked(false);
+                    cbTodos.setChecked(false);
+                }
+            }
+        });
+
     }
 
     public void cargarListaAdministracionFiltrada(View view) {

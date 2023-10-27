@@ -24,3 +24,4 @@ Version 0.0.31 - Agregado boton anti panico para usuarios autenticados como para
 Version 0.0.32 - Agregado boton para consultar telefonos de emergencia, con un listado de numeros y al hacer click sobre un item se realiza la llamada.
 Version 0.0.32-1 - Agregados colores para diferenciar el estado del evento: Rojo (evento en curso y verificado), amarillo(evento en curso y NO verificado) y gris (evento finalizado).
 Version 0.0.32-2 - Agregada fecha inicio y fecha fin en los items de las listas.
+Version 0.0.32-3 - Agregado control de filtro para eventos finalizados tanto para el listado de administracion como para el listado de eventos.

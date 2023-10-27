@@ -12,7 +12,7 @@
         android:id="@+id/lay_administracion"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible">
+        android:visibility="visible">
 
         <CheckBox
             android:id="@+id/cb_solo_verificados"
@@ -49,6 +49,17 @@
             app:layout_constraintStart_toEndOf="@+id/cb_solo_verificados"
             app:layout_constraintTop_toBottomOf="@+id/textView5"
             app:layout_constraintVertical_bias="0.0" />
+
+        <CheckBox
+            android:id="@+id/cb_solo_finalizados_admin"
+            android:layout_width="90dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:text="Finalizados"
+            android:textSize="10sp"
+            app:layout_constraintStart_toEndOf="@+id/cb_solo_en_curso_listado"
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline4"
@@ -89,13 +100,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="16dp"
             android:onClick="cargarListaAdministracionFiltrada"
             android:text="Aplicar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/cb_solo_en_curso_listado"
-            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+            app:layout_constraintTop_toBottomOf="@+id/cb_todos" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_listadoAdministracion"

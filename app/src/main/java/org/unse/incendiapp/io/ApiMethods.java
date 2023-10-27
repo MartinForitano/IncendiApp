@@ -63,4 +63,7 @@ public interface ApiMethods {
 
     @POST("/eventos/alta/botonantipanico/")
     Call<DTOEventoResponse> altaEventoBotonAntipanico(@Body DTOEventoResponse evento);
+
+    @GET("/eventos/listado/finalizados/")
+    Call<DTOListadoGeneral> obtenerListadoFinalizados(@Header("Authorization") String token);
 }

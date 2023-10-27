@@ -50,6 +50,19 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_msj_filtro"
             app:layout_constraintVertical_bias="0.0" />
 
+        <CheckBox
+            android:id="@+id/cb_solo_finalizados"
+            android:layout_width="90dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:text="Finalizados"
+            android:textSize="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.466"
+            app:layout_constraintStart_toEndOf="@+id/cb_solo_en_curso_listado"
+            app:layout_constraintTop_toBottomOf="@+id/tv_msj_filtro" />
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline4"
             android:layout_width="0dp"
@@ -89,13 +102,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="20dp"
             android:onClick="cargarListaAdministracionFiltradaLista"
             android:text="Aplicar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/cb_solo_en_curso_listado"
-            app:layout_constraintTop_toBottomOf="@+id/tv_msj_filtro" />
+            app:layout_constraintTop_toBottomOf="@+id/cb_solo_en_curso_listado" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_listadoAdministracion_listado"
