@@ -727,7 +727,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 Date date = Date.from(Instant.now());
                 date.setHours(date.getHours()-3);
-                DTOEventoResponse e = new DTOEventoResponse(null, "Boton antipanico", 0, new String[0], "0 metros", "", date.getTime(), null, ubicacionGPS.getLatitude(), ubicacionGPS.getLongitude(), false);
+                Usuario u = obtenerUsuario();
+                String nombreUsuario = "";
+                if(u != null){
+                    nombreUsuario = u.getNombre();
+                }
+                DTOEventoResponse e = new DTOEventoResponse(null, "Boton antipanico", 0, new String[0], "0 metros", nombreUsuario, date.getTime(), null, ubicacionGPS.getLatitude(), ubicacionGPS.getLongitude(), false);
 
                 //Creamos una instancia de Retrofit
                 Retrofit.Builder builder = new Retrofit.Builder()
