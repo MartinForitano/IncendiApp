@@ -388,8 +388,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void configurarRecyclerEventos(ArrayList<item_evento> listaItems) {
+        Usuario u = obtenerUsuario();
         RecyclerView recyclerView = findViewById(R.id.rv_listaEventos);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        RecyclerView recyclerViewNoLog = findViewById(R.id.rv_listaEventos_nolog);
         AdaptadorDatos adaptadorDatos = new AdaptadorDatos(this, listaItems);
         adaptadorDatos.setListener(new View.OnClickListener() {
             @Override
@@ -397,22 +398,38 @@ public class MainActivity extends AppCompatActivity {
                 iraEventoInfo(listaItems.get(recyclerView.getChildLayoutPosition(view)).getIdEvento());
             }
         });
-        recyclerView.setAdapter(adaptadorDatos);
+        if(u != null) {
+                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                recyclerView.setAdapter(adaptadorDatos);
+        } else {
+            recyclerViewNoLog.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            recyclerViewNoLog.setAdapter(adaptadorDatos);
+        }
     }
 
     public void cargarInterfazListadoEventos() {
-        ConstraintLayout layAdmin, layNoUsu;
+        ConstraintLayout layAdmin, layUsuBasico, layNolog;
+        layNolog = findViewById(R.id.lay_listado_actuales_nolog);
         layAdmin = findViewById(R.id.lay_administracion_listado);
-        layNoUsu = findViewById(R.id.lay_listado_actuales);
+        layUsuBasico = findViewById(R.id.lay_listado_actuales);
         Usuario u = obtenerUsuario();
         if (u != null) {
-            cargarListaAdministracionLista();
-            layAdmin.setVisibility(View.VISIBLE);
-            layNoUsu.setVisibility(View.INVISIBLE);
-            configurarControlesFiltro();
+            if(u.getTipoUsuario() == 2){
+                layAdmin.setVisibility(View.INVISIBLE);
+                layNolog.setVisibility(View.INVISIBLE);
+                layUsuBasico.setVisibility(View.VISIBLE);
+                cargarListaEventosEnCurso();
+            }else{
+                cargarListaAdministracionLista();
+                layAdmin.setVisibility(View.VISIBLE);
+                layNolog.setVisibility(View.INVISIBLE);
+                layUsuBasico.setVisibility(View.INVISIBLE);
+                configurarControlesFiltro();
+            }
         } else {
+            layNolog.setVisibility(View.VISIBLE);
             layAdmin.setVisibility(View.INVISIBLE);
-            layNoUsu.setVisibility(View.VISIBLE);
+            layUsuBasico.setVisibility(View.INVISIBLE);
             cargarListaEventosEnCurso();
         }
     }
@@ -2079,11 +2096,10 @@ public class MainActivity extends AppCompatActivity {
                         DB.insert("usuarios", null, registro);
                         NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
                         navController.navigate(R.id.action_cuenta_to_fragment_cuenta_info);
-                        DB.close();
                     }else{
                         DB.update("usuarios",registro, null, null);
-                        DB.close();
                     }
+                    DB.close();
                 }
             }
 

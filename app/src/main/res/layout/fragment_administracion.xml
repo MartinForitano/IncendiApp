@@ -12,7 +12,7 @@
         android:id="@+id/lay_administracion"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <CheckBox
             android:id="@+id/cb_solo_verificados"
@@ -91,7 +91,6 @@
             android:contentDescription="Agregar evento"
             android:onClick="iraCrearEvento"
             android:src="@android:drawable/ic_input_add"
-            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -128,7 +127,7 @@
         android:id="@+id/lay_aviso_login"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_aviso_login"
@@ -136,6 +135,28 @@
             android:layout_height="wrap_content"
             android:elegantTextHeight="true"
             android:text="¡Debes registrarte e iniciar sesion para usar este apartado!"
+            android:textAlignment="center"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lay_aviso_permiso"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_aviso_permiso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elegantTextHeight="true"
+            android:text="¡No tienes permisos para usar este apartado!"
             android:textAlignment="center"
             android:textSize="26sp"
             android:textStyle="bold"

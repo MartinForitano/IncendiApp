@@ -9,10 +9,48 @@
     tools:context=".UI.listado_eventos">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lay_listado_actuales_nolog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fav_btn_telefonosUtilies3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="72dp"
+            android:clickable="true"
+            android:contentDescription="Telefonos utiles"
+            android:onClick="iraListadoTelefonosUtiles"
+            android:src="@android:drawable/stat_sys_phone_call"
+            android:visibility="visible"
+            app:fabSize="auto"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:useCompatPadding="false" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_listaEventos_nolog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            android:clickable="false"
+            android:filterTouchesWhenObscured="false"
+            android:focusable="auto"
+            android:focusableInTouchMode="false"
+            android:touchscreenBlocksFocus="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lay_administracion_listado"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible">
+        android:visibility="gone">
 
         <CheckBox
             android:id="@+id/cb_solo_verificados_listado"
@@ -144,7 +182,7 @@
         android:id="@+id/lay_listado_actuales"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible">
+        android:visibility="gone">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fav_btn_telefonosUtilies2"

@@ -90,18 +90,27 @@ public class administracion extends Fragment {
     }
 
     private void cargarInterfazAdministracion(){
-        ConstraintLayout layAdmin, layAviso;
+        ConstraintLayout layAdmin, layAviso_login, layAviso_permiso;
+        layAviso_permiso = getActivity().findViewById(R.id.lay_aviso_permiso);
         layAdmin = getActivity().findViewById(R.id.lay_administracion);
-        layAviso = getActivity().findViewById(R.id.lay_aviso_login);
+        layAviso_login = getActivity().findViewById(R.id.lay_aviso_login);
         Usuario u = obtenerUsuario();
         if(u!=null) {
-            ((MainActivity) getActivity()).cargarListaAdministracion();
-            layAdmin.setVisibility(View.VISIBLE);
-            layAviso.setVisibility(View.INVISIBLE);
-            configurarControlesFiltro();
+            if(u.getTipoUsuario() == 2){
+                layAdmin.setVisibility(View.INVISIBLE);
+                layAviso_permiso.setVisibility(View.VISIBLE);
+                layAviso_login.setVisibility(View.INVISIBLE);
+            }else{
+                ((MainActivity) getActivity()).cargarListaAdministracion();
+                layAdmin.setVisibility(View.VISIBLE);
+                layAviso_login.setVisibility(View.INVISIBLE);
+                layAviso_permiso.setVisibility(View.INVISIBLE);
+                configurarControlesFiltro();
+            }
         }else {
             layAdmin.setVisibility(View.INVISIBLE);
-            layAviso.setVisibility(View.VISIBLE);
+            layAviso_permiso.setVisibility(View.INVISIBLE);
+            layAviso_login.setVisibility(View.VISIBLE);
         }
     }
 
@@ -111,8 +120,9 @@ public class administracion extends Fragment {
         Cursor registro = DB.rawQuery("SELECT * FROM usuarios where idUsuario = 1", null);
         Usuario u = null;
         if(registro.moveToFirst()){
-            u = new Usuario(null, registro.getString(0), registro.getString(1), registro.getString(2), registro.getInt(3));
+            u = new Usuario(null, registro.getString(1), registro.getString(2), registro.getString(3), registro.getInt(4));
         }
+        DB.close();
         return u;
     }
 
