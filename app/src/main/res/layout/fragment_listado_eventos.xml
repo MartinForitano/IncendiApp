@@ -50,7 +50,7 @@
         android:id="@+id/lay_administracion_listado"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <CheckBox
             android:id="@+id/cb_solo_verificados_listado"
@@ -175,6 +175,18 @@
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/fav_btn_botonAntipanico"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:hint="Buscar por ubicacion"
+            android:inputType="text"
+            app:layout_constraintBottom_toTopOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cb_todos_listado" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
