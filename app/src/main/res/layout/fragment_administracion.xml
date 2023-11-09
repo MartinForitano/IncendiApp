@@ -12,7 +12,7 @@
         android:id="@+id/lay_administracion"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <CheckBox
             android:id="@+id/cb_solo_verificados"
@@ -120,6 +120,32 @@
             app:layout_constraintVertical_bias="0.159">
 
         </androidx.recyclerview.widget.RecyclerView>
+
+        <EditText
+            android:id="@+id/et_buscadorPorUbicacionAdministracion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:hint="Buscar por ubicacion"
+            android:inputType="text"
+            app:layout_constraintBottom_toTopOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cb_todos"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageButton
+            android:id="@+id/btn_buscadorPorUbicacionAdministracion"
+            android:layout_width="56dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="20dp"
+            android:onClick="buscarEventosPorUbicacionAdministracion"
+            android:src="@android:drawable/ic_menu_search"
+            app:layout_constraintBottom_toTopOf="@+id/guideline4"
+            app:layout_constraintStart_toEndOf="@+id/et_buscadorPorUbicacionAdministracion"
+            app:layout_constraintTop_toBottomOf="@+id/cb_solo_en_curso_listado"
+            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

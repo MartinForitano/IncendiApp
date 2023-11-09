@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -209,6 +210,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(getApplicationContext(), "Error: Nombre o contraseña vacios", Toast.LENGTH_LONG).show();
         }
+        //OCULTAR TECLADO
+        InputMethodManager imm = (InputMethodManager)getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 
@@ -258,6 +262,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //OCULTAR TECLADO
+        InputMethodManager imm = (InputMethodManager)getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     public Usuario getUsuarioIngreso() {
@@ -409,9 +416,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void cargarInterfazListadoEventos() {
         ConstraintLayout layAdmin, layUsuBasico, layNolog;
+        EditText etBuscadorUbicacion;
         layNolog = findViewById(R.id.lay_listado_actuales_nolog);
         layAdmin = findViewById(R.id.lay_administracion_listado);
         layUsuBasico = findViewById(R.id.lay_listado_actuales);
+        etBuscadorUbicacion = findViewById(R.id.et_buscadorEventoUbicacion);
         Usuario u = obtenerUsuario();
         if (u != null) {
             if(u.getTipoUsuario() == 2){
@@ -674,6 +683,50 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void buscarEventosPorUbicacion(View view){
+        EditText etBuscadorPorUbicacion = findViewById(R.id.et_buscadorEventoUbicacion);
+        if(etBuscadorPorUbicacion.getText().toString().trim() != "") {
+            //Creamos una instancia de Retrofit
+            Retrofit.Builder builder = new Retrofit.Builder()
+                    .baseUrl("http://" + ipApi + "/eventos/listado/ubicacion/{ubicacion}/")
+                    .addConverterFactory(GsonConverterFactory.create());
+            Retrofit retrofit = builder.build();
+
+            //Obtener cliente y crear la llamada para la peticion
+
+            ApiMethods apiMethods = retrofit.create(ApiMethods.class);
+            Call<DTOListadoGeneral> llamada = apiMethods.obtenerListadoPorUbicacion(obtenerTokenUsuario(), etBuscadorPorUbicacion.getText().toString());
+            llamada.enqueue(new Callback<DTOListadoGeneral>() {
+                @Override
+                public void onResponse(Call<DTOListadoGeneral> call, Response<DTOListadoGeneral> response) {
+                    ArrayList<item_evento> listaItems = new ArrayList<>();
+                    if (response.isSuccessful()) {
+                        List<DTOEventoResponse> listaEventos = response.body().getListaEventos();
+                        for (int i = 0; i < listaEventos.size(); i++) {
+                            item_evento e = null;
+                            e = new item_evento(listaEventos.get(i).getId(), listaEventos.get(i).getTipo(), listaEventos.get(i).getUbicacionEvento(), listaEventos.get(i).getEsVerificado(), listaEventos.get(i).getTiempoInicio(), listaEventos.get(i).getTiempoFin());
+                            listaItems.add(e);
+                        }
+                        configurarRecyclerEventosAdministracionLista(listaItems);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "No existen eventos cargados", Toast.LENGTH_LONG).show();
+                        cargarListaAdministracionLista();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DTOListadoGeneral> call, Throwable t) {
+
+                }
+            });
+        }
+
+        //OCULTAR TECLADO
+        InputMethodManager imm = (InputMethodManager)getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+    }
+
     public void cargarListaAdministracion() {
         //Creamos una instancia de Retrofit
         Retrofit.Builder builder = new Retrofit.Builder()
@@ -700,6 +753,7 @@ public class MainActivity extends AppCompatActivity {
                     configurarRecyclerEventosAdministracion(listaItems);
                 } else {
                     Toast.makeText(getApplicationContext(), "No existen eventos cargados", Toast.LENGTH_LONG).show();
+
                 }
             }
 
@@ -1146,6 +1200,50 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public void buscarEventosPorUbicacionAdministracion(View view){
+        EditText etBuscadorPorUbicacion = findViewById(R.id.et_buscadorPorUbicacionAdministracion);
+        if(etBuscadorPorUbicacion.getText().toString().trim() != "") {
+            //Creamos una instancia de Retrofit
+            Retrofit.Builder builder = new Retrofit.Builder()
+                    .baseUrl("http://" + ipApi + "/eventos/listado/ubicacion/{ubicacion}/")
+                    .addConverterFactory(GsonConverterFactory.create());
+            Retrofit retrofit = builder.build();
+
+            //Obtener cliente y crear la llamada para la peticion
+
+            ApiMethods apiMethods = retrofit.create(ApiMethods.class);
+            Call<DTOListadoGeneral> llamada = apiMethods.obtenerListadoPorUbicacion(obtenerTokenUsuario(), etBuscadorPorUbicacion.getText().toString());
+            llamada.enqueue(new Callback<DTOListadoGeneral>() {
+                @Override
+                public void onResponse(Call<DTOListadoGeneral> call, Response<DTOListadoGeneral> response) {
+                    ArrayList<item_evento> listaItems = new ArrayList<>();
+                    if (response.isSuccessful()) {
+                        List<DTOEventoResponse> listaEventos = response.body().getListaEventos();
+                        for (int i = 0; i < listaEventos.size(); i++) {
+                            item_evento e = null;
+                            e = new item_evento(listaEventos.get(i).getId(), listaEventos.get(i).getTipo(), listaEventos.get(i).getUbicacionEvento(), listaEventos.get(i).getEsVerificado(), listaEventos.get(i).getTiempoInicio(), listaEventos.get(i).getTiempoFin());
+                            listaItems.add(e);
+                        }
+                        configurarRecyclerEventosAdministracion(listaItems);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "No existen eventos cargados", Toast.LENGTH_LONG).show();
+                        cargarListaAdministracion();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DTOListadoGeneral> call, Throwable t) {
+
+                }
+            });
+        }
+
+        //OCULTAR TECLADO
+        InputMethodManager imm = (InputMethodManager)getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
     }
 
 

@@ -50,7 +50,7 @@
         android:id="@+id/lay_administracion_listado"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="invisible">
 
         <CheckBox
             android:id="@+id/cb_solo_verificados_listado"
@@ -177,7 +177,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <EditText
-            android:id="@+id/editTextText"
+            android:id="@+id/et_buscadorEventoUbicacion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -187,6 +187,18 @@
             app:layout_constraintBottom_toTopOf="@+id/guideline4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cb_todos_listado" />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="51dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="16dp"
+            android:onClick="buscarEventosPorUbicacion"
+            android:src="@android:drawable/ic_menu_search"
+            app:layout_constraintBottom_toTopOf="@+id/guideline4"
+            app:layout_constraintStart_toEndOf="@+id/et_buscadorEventoUbicacion"
+            app:layout_constraintTop_toBottomOf="@+id/cb_solo_en_curso_listado" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -66,4 +66,7 @@ public interface ApiMethods {
 
     @GET("/eventos/listado/finalizados/")
     Call<DTOListadoGeneral> obtenerListadoFinalizados(@Header("Authorization") String token);
+
+    @GET("/eventos/listado/ubicacion/{ubicacion}/")
+    Call<DTOListadoGeneral> obtenerListadoPorUbicacion(@Header("Authorization") String token, @Path("ubicacion") String ubicacion);
 }

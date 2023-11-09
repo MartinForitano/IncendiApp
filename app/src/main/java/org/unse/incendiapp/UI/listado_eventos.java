@@ -96,4 +96,8 @@ public class listado_eventos extends Fragment {
 
     }
 
+    public void buscarEventosPorUbicacion(View view){
+
+    }
+
 }

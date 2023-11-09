@@ -28,3 +28,4 @@ Version 0.0.32-3 - Agregado control de filtro para eventos finalizados tanto par
 Version 0.0.32-4 - Ahora al pulsar el boton antipanico si se hizo login con un usuario, se grabara el nombre del mismo en el evento.
 Version 0.0.32-5 - Ahora al pulsar el boton antipanico automaticamente se realiza la llamada al 101 - Comando Radioelectrico y se carga el evento.
 Version 0.0.33 - Nuevo tipo de usuario: 2 es un usuario basico registrado, quitado boton antipanico de usuario sin loggear.
+Version 0.0.34 - Agregado filtro para buscar eventos por ubicacion, tambien se podra utilizar para buscar los eventos por el nombre de cuenta que activo los botones antipanico. Este filtro se encuentra en los listados de administracion y listado de eventos.

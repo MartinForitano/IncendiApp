@@ -184,4 +184,7 @@ public class administracion extends Fragment {
 
     }
 
+    public void buscarEventosPorUbicacionAdministracion(View view) {
+    }
+
 }
